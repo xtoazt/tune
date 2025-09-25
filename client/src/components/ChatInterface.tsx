@@ -38,15 +38,15 @@ const ChatInterface: React.FC = () => {
     });
 
     // Add assistant message placeholder
-    const assistantMessageId = Date.now().toString() + Math.random().toString(36).substr(2, 9);
     addMessage(currentSession.id, {
       role: 'assistant',
       content: '',
     });
     
-    // Get the actual message ID from the last message
-    const lastMessage = currentSession.messages[currentSession.messages.length - 1];
-    const actualAssistantMessageId = lastMessage?.id || assistantMessageId;
+    // Get the assistant message ID from the updated session
+    const updatedSession = state.sessions.find(s => s.id === currentSession.id);
+    const assistantMessage = updatedSession?.messages[updatedSession.messages.length - 1];
+    const assistantMessageId = assistantMessage?.id;
 
     setLoading(true);
     setStreaming(true);
@@ -71,7 +71,7 @@ const ChatInterface: React.FC = () => {
           system_message: settingsState.settings.systemMessage,
         }, (chunk) => {
           fullResponse += chunk;
-          updateMessage(currentSession.id, actualAssistantMessageId, fullResponse);
+          updateMessage(currentSession.id, assistantMessageId, fullResponse);
         });
       } else {
         // Non-streaming response
@@ -86,12 +86,12 @@ const ChatInterface: React.FC = () => {
           system_message: settingsState.settings.systemMessage,
         });
 
-        updateMessage(currentSession.id, actualAssistantMessageId, response.message.content);
+        updateMessage(currentSession.id, assistantMessageId, response.message.content);
       }
     } catch (error) {
       console.error('Error sending message:', error);
       toast.error('Failed to send message. Please try again.');
-      updateMessage(currentSession.id, actualAssistantMessageId, 'Sorry, I encountered an error. Please try again.');
+      updateMessage(currentSession.id, assistantMessageId, 'Sorry, I encountered an error. Please try again.');
     } finally {
       setLoading(false);
       setStreaming(false);

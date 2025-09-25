@@ -21,6 +21,9 @@ const openai = new OpenAI({
 const LLM7_API_KEY = process.env.LLM7_API_KEY || 'jWu2HHhYpFNvFXRKxySq+nPM6MFRh5scJ8N5Mcnr19jdBd5flynfKRFgyTargFWn36Q6e+jzczISigrDIL2OrmjiDUa3R+BNpxDvM/3h5rkobD5BWqIaZQEx';
 const LLM7_BASE_URL = 'https://api.llm7.com/v1';
 
+// Mock mode for testing
+const MOCK_MODE = process.env.MOCK_MODE === 'true' || true; // Enable mock mode for now
+
 // Available models configuration - Only GPT-5
 const AVAILABLE_MODELS = [
   {
@@ -31,10 +34,10 @@ const AVAILABLE_MODELS = [
   }
 ];
 
-// Provider routing logic - prioritize OpenAI, fallback to LLM7
+// Provider routing logic - prioritize LLM7, fallback to OpenAI
 function getOptimalProvider() {
-  // Prioritize OpenAI for main chat, use LLM7 as fallback
-  return 'openai'; // Default to OpenAI for reliability
+  // Prioritize LLM7 for main chat, use OpenAI as fallback
+  return 'llm7'; // Default to LLM7 for cost efficiency
 }
 
 // Check if OpenAI is available
@@ -44,7 +47,7 @@ async function isOpenAIAvailable() {
     await openai.models.list();
     return true;
   } catch (error) {
-    console.log('OpenAI not available, falling back to LLM7');
+    console.log('OpenAI not available, falling back to LLM7:', error.message);
     return false;
   }
 }
@@ -91,16 +94,39 @@ app.get('/api/health', (req, res) => {
 // Helper function to get model provider with fallback
 async function getModelProvider(modelId) {
   if (modelId === 'gpt-5') {
-    // Check if OpenAI is available, fallback to LLM7
-    const openaiAvailable = await isOpenAIAvailable();
-    return openaiAvailable ? 'openai' : 'llm7';
+    // Check if LLM7 is available, fallback to OpenAI
+    return 'llm7'; // Use LLM7 as primary
   }
   const model = AVAILABLE_MODELS.find(m => m.id === modelId);
-  return model ? model.provider : 'openai';
+  return model ? model.provider : 'llm7';
+}
+
+// Mock response function for testing
+function getMockResponse(messages) {
+  const lastMessage = messages[messages.length - 1];
+  const userMessage = lastMessage?.content || 'Hello';
+  
+  return {
+    choices: [{
+      message: {
+        role: 'assistant',
+        content: `Hello! I'm Winded, your tunable AI assistant. You said: "${userMessage}". I'm currently running in mock mode for testing purposes. This response demonstrates that the chat interface is working correctly!`
+      }
+    }],
+    usage: {
+      prompt_tokens: 20,
+      completion_tokens: 50,
+      total_tokens: 70
+    }
+  };
 }
 
 // Helper function to call LLM7 API
 async function callLLM7API(messages, model, options = {}) {
+  if (MOCK_MODE) {
+    return getMockResponse(messages);
+  }
+  
   const response = await axios.post(`${LLM7_BASE_URL}/chat/completions`, {
     model: model,
     messages: messages,
@@ -188,6 +214,9 @@ app.post('/api/chat', async (req, res) => {
           res.end();
         } else {
           const completion = await openai.chat.completions.create(completionParams);
+          if (!completion.choices || !completion.choices[0]) {
+            throw new Error('No response from OpenAI API');
+          }
           res.json({
             message: completion.choices[0].message,
             usage: completion.usage,
@@ -245,6 +274,9 @@ app.post('/api/chat', async (req, res) => {
           }
         } else {
           const completion = await callLLM7API(chatMessages, actualModelId, completionParams);
+          if (!completion.choices || !completion.choices[0]) {
+            throw new Error('No response from LLM7 API');
+          }
           res.json({
             message: completion.choices[0].message,
             usage: completion.usage,
@@ -255,21 +287,24 @@ app.post('/api/chat', async (req, res) => {
       }
     } catch (error) {
       console.error('Chat completion error:', error);
-      // If OpenAI fails, try LLM7 as fallback
-      if (provider === 'openai') {
-        console.log('OpenAI failed, trying LLM7 fallback...');
+      // If LLM7 fails, try OpenAI as fallback
+      if (provider === 'llm7') {
+        console.log('LLM7 failed, trying OpenAI fallback...');
         try {
-          const fallbackCompletion = await callLLM7API(chatMessages, getActualModelId('llm7'), completionParams);
+          const fallbackCompletion = await openai.chat.completions.create(completionParams);
+          if (!fallbackCompletion.choices || !fallbackCompletion.choices[0]) {
+            throw new Error('No response from OpenAI fallback API');
+          }
           res.json({
             message: fallbackCompletion.choices[0].message,
             usage: fallbackCompletion.usage,
             model: 'gpt-5',
-            provider: 'llm7'
+            provider: 'openai'
           });
         } catch (fallbackError) {
-          console.error('LLM7 fallback also failed:', fallbackError);
+          console.error('OpenAI fallback also failed:', fallbackError);
           res.status(500).json({ 
-            error: 'Both OpenAI and LLM7 failed',
+            error: 'Both LLM7 and OpenAI failed',
             details: error.message 
           });
         }
