@@ -31,7 +31,7 @@ type SettingsAction =
   | { type: 'RESET_SETTINGS' };
 
 const defaultSettings: ChatSettings = {
-  model: 'gpt-4o',
+  model: 'gpt-5',
   temperature: 0.7,
   maxTokens: 2000,
   topP: 1,
