@@ -31,11 +31,22 @@ const AVAILABLE_MODELS = [
   }
 ];
 
-// Provider routing logic - choose fastest/cheapest
+// Provider routing logic - prioritize OpenAI, fallback to LLM7
 function getOptimalProvider() {
-  // For now, prioritize LLM7 for cost efficiency, but this could be dynamic
-  // In production, you could implement actual latency/cost checking
-  return 'llm7'; // Default to LLM7 for cost efficiency
+  // Prioritize OpenAI for main chat, use LLM7 as fallback
+  return 'openai'; // Default to OpenAI for reliability
+}
+
+// Check if OpenAI is available
+async function isOpenAIAvailable() {
+  try {
+    // Simple test to check if OpenAI API key is working
+    await openai.models.list();
+    return true;
+  } catch (error) {
+    console.log('OpenAI not available, falling back to LLM7');
+    return false;
+  }
 }
 
 // Map GPT-5 to actual model IDs based on provider
@@ -77,10 +88,12 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'OK', message: 'Winded AI Server is running' });
 });
 
-// Helper function to get model provider
-function getModelProvider(modelId) {
+// Helper function to get model provider with fallback
+async function getModelProvider(modelId) {
   if (modelId === 'gpt-5') {
-    return getOptimalProvider();
+    // Check if OpenAI is available, fallback to LLM7
+    const openaiAvailable = await isOpenAIAvailable();
+    return openaiAvailable ? 'openai' : 'llm7';
   }
   const model = AVAILABLE_MODELS.find(m => m.id === modelId);
   return model ? model.provider : 'openai';
@@ -141,7 +154,7 @@ app.post('/api/chat', async (req, res) => {
       ? [{ role: 'system', content: system_message }, ...messages]
       : messages;
 
-    const provider = getModelProvider(model);
+    const provider = await getModelProvider(model);
     const actualModelId = getActualModelId(provider);
     const completionParams = {
       model: actualModelId,
@@ -153,89 +166,117 @@ app.post('/api/chat', async (req, res) => {
       presence_penalty: Math.max(-2, Math.min(2, presence_penalty)),
     };
 
-    if (provider === 'llm7') {
-      // Use LLM7 API
-      if (stream) {
-        res.setHeader('Content-Type', 'text/plain');
-        res.setHeader('Cache-Control', 'no-cache');
-        res.setHeader('Connection', 'keep-alive');
+    try {
+      if (provider === 'openai') {
+        // Use OpenAI API (primary)
+        if (stream) {
+          res.setHeader('Content-Type', 'text/plain');
+          res.setHeader('Cache-Control', 'no-cache');
+          res.setHeader('Connection', 'keep-alive');
 
-        try {
-          const response = await axios.post(`${LLM7_BASE_URL}/chat/completions`, {
+          const stream = await openai.chat.completions.create({
             ...completionParams,
-            stream: true
-          }, {
-            headers: {
-              'Authorization': `Bearer ${LLM7_API_KEY}`,
-              'Content-Type': 'application/json'
-            },
-            responseType: 'stream'
+            stream: true,
           });
 
-          response.data.on('data', (chunk) => {
-            const lines = chunk.toString().split('\n');
-            for (const line of lines) {
-              if (line.startsWith('data: ')) {
-                const data = line.slice(6);
-                if (data === '[DONE]') {
-                  res.end();
-                  return;
-                }
-                try {
-                  const parsed = JSON.parse(data);
-                  const content = parsed.choices?.[0]?.delta?.content || '';
-                  if (content) {
-                    res.write(content);
+          for await (const chunk of stream) {
+            const content = chunk.choices[0]?.delta?.content || '';
+            if (content) {
+              res.write(content);
+            }
+          }
+          res.end();
+        } else {
+          const completion = await openai.chat.completions.create(completionParams);
+          res.json({
+            message: completion.choices[0].message,
+            usage: completion.usage,
+            model: 'gpt-5', // Always return GPT-5 to user
+            provider: 'openai'
+          });
+        }
+      } else {
+        // Use LLM7 API (fallback)
+        if (stream) {
+          res.setHeader('Content-Type', 'text/plain');
+          res.setHeader('Cache-Control', 'no-cache');
+          res.setHeader('Connection', 'keep-alive');
+
+          try {
+            const response = await axios.post(`${LLM7_BASE_URL}/chat/completions`, {
+              ...completionParams,
+              stream: true
+            }, {
+              headers: {
+                'Authorization': `Bearer ${LLM7_API_KEY}`,
+                'Content-Type': 'application/json'
+              },
+              responseType: 'stream'
+            });
+
+            response.data.on('data', (chunk) => {
+              const lines = chunk.toString().split('\n');
+              for (const line of lines) {
+                if (line.startsWith('data: ')) {
+                  const data = line.slice(6);
+                  if (data === '[DONE]') {
+                    res.end();
+                    return;
                   }
-                } catch (e) {
-                  // Ignore parsing errors for streaming
+                  try {
+                    const parsed = JSON.parse(data);
+                    const content = parsed.choices?.[0]?.delta?.content || '';
+                    if (content) {
+                      res.write(content);
+                    }
+                  } catch (e) {
+                    // Ignore parsing errors for streaming
+                  }
                 }
               }
-            }
-          });
+            });
 
-          response.data.on('end', () => {
-            res.end();
-          });
-        } catch (error) {
-          console.error('LLM7 streaming error:', error);
-          res.status(500).json({ error: 'LLM7 streaming failed' });
-        }
-      } else {
-        const completion = await callLLM7API(chatMessages, actualModelId, completionParams);
-        res.json({
-          message: completion.choices[0].message,
-          usage: completion.usage,
-          model: 'gpt-5', // Always return GPT-5 to user
-          provider: 'llm7'
-        });
-      }
-    } else {
-      // Use OpenAI API
-      if (stream) {
-        res.setHeader('Content-Type', 'text/plain');
-        res.setHeader('Cache-Control', 'no-cache');
-        res.setHeader('Connection', 'keep-alive');
-
-        const stream = await openai.chat.completions.create({
-          ...completionParams,
-          stream: true,
-        });
-
-        for await (const chunk of stream) {
-          const content = chunk.choices[0]?.delta?.content || '';
-          if (content) {
-            res.write(content);
+            response.data.on('end', () => {
+              res.end();
+            });
+          } catch (error) {
+            console.error('LLM7 streaming error:', error);
+            res.status(500).json({ error: 'LLM7 streaming failed' });
           }
+        } else {
+          const completion = await callLLM7API(chatMessages, actualModelId, completionParams);
+          res.json({
+            message: completion.choices[0].message,
+            usage: completion.usage,
+            model: 'gpt-5', // Always return GPT-5 to user
+            provider: 'llm7'
+          });
         }
-        res.end();
+      }
+    } catch (error) {
+      console.error('Chat completion error:', error);
+      // If OpenAI fails, try LLM7 as fallback
+      if (provider === 'openai') {
+        console.log('OpenAI failed, trying LLM7 fallback...');
+        try {
+          const fallbackCompletion = await callLLM7API(chatMessages, getActualModelId('llm7'), completionParams);
+          res.json({
+            message: fallbackCompletion.choices[0].message,
+            usage: fallbackCompletion.usage,
+            model: 'gpt-5',
+            provider: 'llm7'
+          });
+        } catch (fallbackError) {
+          console.error('LLM7 fallback also failed:', fallbackError);
+          res.status(500).json({ 
+            error: 'Both OpenAI and LLM7 failed',
+            details: error.message 
+          });
+        }
       } else {
-        const completion = await openai.chat.completions.create(completionParams);
-        res.json({
-          message: completion.choices[0].message,
-          usage: completion.usage,
-          model: 'gpt-5', // Always return GPT-5 to user
-          provider: 'openai'
+        res.status(500).json({ 
+          error: 'Failed to generate response',
+          details: error.message 
         });
       }
     }
@@ -335,7 +376,8 @@ app.post('/api/v1/chat', async (req, res) => {
       { role: 'user', content: message }
     ];
 
-    const provider = getModelProvider(model);
+    // For Winded API, always use LLM7 for cost efficiency
+    const provider = 'llm7';
     const actualModelId = getActualModelId(provider);
     const completionParams = {
       model: actualModelId,
@@ -344,20 +386,23 @@ app.post('/api/v1/chat', async (req, res) => {
       max_tokens: Math.max(1, Math.min(4096, max_tokens)),
     };
 
-    let completion;
-    if (provider === 'llm7') {
-      completion = await callLLM7API(messages, actualModelId, completionParams);
-    } else {
-      completion = await openai.chat.completions.create(completionParams);
+    try {
+      const completion = await callLLM7API(messages, actualModelId, completionParams);
+      res.json({
+        success: true,
+        response: completion.choices[0].message.content,
+        model: 'gpt-5', // Always return GPT-5 to user
+        provider: provider,
+        usage: completion.usage
+      });
+    } catch (error) {
+      console.error('Winded API error:', error);
+      res.status(500).json({ 
+        success: false,
+        error: 'Failed to generate response',
+        details: error.message 
+      });
     }
-
-    res.json({
-      success: true,
-      response: completion.choices[0].message.content,
-      model: 'gpt-5', // Always return GPT-5 to user
-      provider: provider,
-      usage: completion.usage
-    });
   } catch (error) {
     console.error('Developer API error:', error);
     res.status(500).json({ 

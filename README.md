@@ -253,9 +253,10 @@ For issues and questions:
 
 ### GPT-5
 - **GPT-5**: Most advanced AI model available
-- **Automatic Provider Routing**: Automatically uses the fastest and cheapest provider
+- **Smart Provider Routing**: Prioritizes OpenAI for reliability, falls back to LLM7
 - **Transparent to User**: You always get GPT-5, regardless of underlying provider
-- **Cost Optimized**: System automatically chooses between OpenAI and LLM7 for best performance/price
+- **Reliability First**: OpenAI as primary, LLM7 as fallback for maximum uptime
+- **Winded API**: Uses LLM7 for cost efficiency in developer API
 
 ## Environment Variables
 
