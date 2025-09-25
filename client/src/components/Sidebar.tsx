@@ -38,22 +38,16 @@ const Sidebar: React.FC<SidebarProps> = ({ onClose }) => {
   };
 
   return (
-    <motion.div
-      initial={{ x: -300, opacity: 0 }}
-      animate={{ x: 0, opacity: 1 }}
-      exit={{ x: -300, opacity: 0 }}
-      transition={{ duration: 0.3, ease: "easeInOut" }}
-      className="h-full glass border-r border-white/20 flex flex-col"
-    >
+    <div className="h-full bg-white flex flex-col">
       {/* Header */}
-      <div className="p-6 border-b border-white/20">
+      <div className="p-6 border-b border-gray-200">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-semibold text-white">Chat Sessions</h2>
+          <h2 className="text-lg font-semibold text-gray-800">Chat Sessions</h2>
           <button
             onClick={onClose}
-            className="p-1 rounded-lg hover:bg-white/20 transition-colors"
+            className="p-1 rounded-lg hover:bg-gray-100 transition-colors"
           >
-            <X className="w-5 h-5 text-white" />
+            <X className="w-5 h-5 text-gray-600" />
           </button>
         </div>
 
@@ -66,14 +60,14 @@ const Sidebar: React.FC<SidebarProps> = ({ onClose }) => {
               onChange={(e) => setNewSessionTitle(e.target.value)}
               onKeyPress={handleKeyPress}
               placeholder="New session title..."
-              className="flex-1 px-3 py-2 rounded-lg glass border border-white/20 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
+              className="warmwind-input flex-1 px-3 py-2"
             />
             <button
               onClick={handleCreateSession}
               disabled={!newSessionTitle.trim()}
-              className="px-3 py-2 bg-blue-500 hover:bg-blue-600 disabled:bg-gray-500 disabled:cursor-not-allowed rounded-lg transition-colors"
+              className="warmwind-button-primary px-3 py-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <Plus className="w-4 h-4 text-white" />
+              <Plus className="w-4 h-4" />
             </button>
           </div>
         </div>
@@ -91,21 +85,21 @@ const Sidebar: React.FC<SidebarProps> = ({ onClose }) => {
               transition={{ duration: 0.2 }}
               className={`p-3 rounded-lg cursor-pointer transition-all ${
                 currentSession?.id === session.id
-                  ? 'bg-blue-500/30 border border-blue-400/50'
-                  : 'glass hover:bg-white/20 border border-transparent'
+                  ? 'bg-gray-100 border border-gray-300'
+                  : 'hover:bg-gray-50 border border-transparent'
               }`}
               onClick={() => setCurrentSession(session.id)}
             >
               <div className="flex items-start justify-between">
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center space-x-2 mb-1">
-                    <MessageSquare className="w-4 h-4 text-blue-400 flex-shrink-0" />
-                    <h3 className="text-sm font-medium text-white truncate">
+                    <MessageSquare className="w-4 h-4 text-gray-600 flex-shrink-0" />
+                    <h3 className="text-sm font-medium text-gray-800 truncate">
                       {session.title}
                     </h3>
                   </div>
                   
-                  <div className="flex items-center space-x-3 text-xs text-gray-300">
+                  <div className="flex items-center space-x-3 text-xs text-gray-500">
                     <div className="flex items-center space-x-1">
                       <Bot className="w-3 h-3" />
                       <span>{session.model}</span>
@@ -116,7 +110,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onClose }) => {
                     </div>
                   </div>
                   
-                  <div className="mt-1 text-xs text-gray-400">
+                  <div className="mt-1 text-xs text-gray-500">
                     {session.messages.length} messages
                   </div>
                 </div>
@@ -126,9 +120,9 @@ const Sidebar: React.FC<SidebarProps> = ({ onClose }) => {
                     e.stopPropagation();
                     deleteSession(session.id);
                   }}
-                  className="p-1 rounded hover:bg-red-500/20 transition-colors"
+                  className="p-1 rounded hover:bg-red-50 transition-colors"
                 >
-                  <Trash2 className="w-3 h-3 text-red-400" />
+                  <Trash2 className="w-3 h-3 text-red-500" />
                 </button>
               </div>
             </motion.div>
@@ -142,34 +136,34 @@ const Sidebar: React.FC<SidebarProps> = ({ onClose }) => {
             className="text-center py-8"
           >
             <MessageSquare className="w-12 h-12 text-gray-400 mx-auto mb-3" />
-            <p className="text-gray-400 text-sm">No chat sessions yet</p>
-            <p className="text-gray-500 text-xs mt-1">Create your first session to get started</p>
+            <p className="text-gray-500 text-sm">No chat sessions yet</p>
+            <p className="text-gray-400 text-xs mt-1">Create your first session to get started</p>
           </motion.div>
         )}
       </div>
 
       {/* Footer */}
-      <div className="p-4 border-t border-white/20">
+      <div className="p-4 border-t border-gray-200">
         <button
           onClick={toggleSettings}
-          className="w-full flex items-center space-x-3 p-3 rounded-lg glass hover:bg-white/20 transition-colors"
+          className="w-full flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-50 transition-colors"
         >
-          <Settings className="w-5 h-5 text-white" />
-          <span className="text-white font-medium">Settings</span>
+          <Settings className="w-5 h-5 text-gray-600" />
+          <span className="text-gray-800 font-medium">Settings</span>
         </button>
         
-        <div className="mt-3 p-3 rounded-lg glass">
+        <div className="mt-3 p-3 rounded-lg bg-gray-50">
           <div className="flex items-center space-x-2 mb-2">
-            <Zap className="w-4 h-4 text-yellow-400" />
-            <span className="text-sm font-medium text-white">AI Status</span>
+            <Zap className="w-4 h-4 text-gray-600" />
+            <span className="text-sm font-medium text-gray-800">AI Status</span>
           </div>
           <div className="flex items-center space-x-2">
-            <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
-            <span className="text-xs text-gray-300">Winded Mode Active</span>
+            <div className="w-2 h-2 bg-green-500 rounded-full" />
+            <span className="text-xs text-gray-600">Winded Mode Active</span>
           </div>
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 };
 

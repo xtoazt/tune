@@ -114,30 +114,53 @@ const ChatInterface: React.FC = () => {
 
   if (!currentSession) {
     return (
-      <div className="flex-1 flex items-center justify-center">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-center"
-        >
-          <Bot className="w-16 h-16 text-blue-400 mx-auto mb-4 animate-float" />
-          <h2 className="text-2xl font-bold text-white mb-2">Welcome to Winded</h2>
-          <p className="text-gray-300 mb-6 max-w-md">
-            Create a new chat session to start conversing with your unrestricted AI assistant. No limitations, no restrictions.
-          </p>
-          <div className="flex items-center justify-center space-x-2 text-sm text-gray-400">
-            <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
-            <span>AI Ready • Unrestricted Mode</span>
+      <div className="flex items-center justify-center min-h-[600px]">
+        <div className="warmwind-container p-12 max-w-2xl text-center">
+          <div className="mb-8">
+            <div className="w-20 h-20 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
+              <Bot className="w-10 h-10 text-gray-600" />
+            </div>
+            <h2 className="text-3xl font-semibold text-gray-800 mb-4">Welcome to Winded</h2>
+            <p className="text-lg text-gray-600 mb-8">
+              Create a new chat session to start conversing with your unrestricted AI assistant. 
+              No limitations, no restrictions, complete freedom.
+            </p>
           </div>
-        </motion.div>
+          
+          <div className="flex items-center justify-center space-x-3 mb-8">
+            <div className="warmwind-button-primary px-6 py-3 text-sm font-medium">
+              Start New Session
+            </div>
+            <div className="warmwind-button px-6 py-3 text-sm font-medium">
+              View Examples
+            </div>
+          </div>
+          
+          <div className="flex items-center justify-center space-x-2 text-sm text-gray-500">
+            <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+            <span>AI Ready • Unrestricted Mode Active</span>
+          </div>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="flex-1 flex flex-col h-full">
+    <div className="warmwind-container p-8">
+      {/* Chat Header */}
+      <div className="flex items-center justify-between mb-6 pb-4 border-b border-gray-200">
+        <div>
+          <h3 className="text-lg font-semibold text-gray-800">{currentSession.title}</h3>
+          <p className="text-sm text-gray-500">Model: {settingsState.settings.model}</p>
+        </div>
+        <div className="flex items-center space-x-2">
+          <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+          <span className="text-sm text-gray-500">Unrestricted Mode</span>
+        </div>
+      </div>
+
       {/* Messages Area */}
-      <div className="flex-1 overflow-y-auto p-6 space-y-4">
+      <div className="space-y-4 mb-6 max-h-[500px] overflow-y-auto">
         <AnimatePresence>
           {currentSession.messages.map((message, index) => (
             <motion.div
@@ -145,7 +168,7 @@ const ChatInterface: React.FC = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.3, delay: index * 0.1 }}
+              transition={{ duration: 0.3, delay: index * 0.05 }}
             >
               <MessageBubble message={message} />
             </motion.div>
@@ -158,8 +181,8 @@ const ChatInterface: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             className="flex items-start space-x-3"
           >
-            <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center flex-shrink-0">
-              <Bot className="w-4 h-4 text-white" />
+            <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center flex-shrink-0">
+              <Bot className="w-4 h-4 text-gray-600" />
             </div>
             <div className="flex-1">
               <TypingIndicator />
@@ -171,47 +194,44 @@ const ChatInterface: React.FC = () => {
       </div>
 
       {/* Input Area */}
-      <div className="p-6 border-t border-white/20">
-        <div className="max-w-4xl mx-auto">
-          <div className="flex items-end space-x-3">
-            <div className="flex-1 relative">
-              <textarea
-                ref={inputRef}
-                value={input}
-                onChange={handleInputChange}
-                onKeyPress={handleKeyPress}
-                placeholder="Type your message here... (Press Enter to send, Shift+Enter for new line)"
-                className="w-full px-4 py-3 rounded-xl glass border border-white/20 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400 resize-none min-h-[50px] max-h-[120px]"
-                rows={1}
-                disabled={state.isLoading}
-              />
-            </div>
-            
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={handleSendMessage}
-              disabled={!input.trim() || state.isLoading}
-              className="p-3 bg-blue-500 hover:bg-blue-600 disabled:bg-gray-500 disabled:cursor-not-allowed rounded-xl transition-colors flex items-center justify-center"
-            >
-              {state.isLoading ? (
-                <Loader2 className="w-5 h-5 text-white animate-spin" />
-              ) : (
-                <Send className="w-5 h-5 text-white" />
-              )}
-            </motion.button>
+      <div className="border-t border-gray-200 pt-6">
+        <div className="flex items-end space-x-3">
+          <div className="flex-1 relative">
+            <textarea
+              ref={inputRef}
+              value={input}
+              onChange={handleInputChange}
+              onKeyPress={handleKeyPress}
+              placeholder="Ask Winded anything... (Press Enter to send, Shift+Enter for new line)"
+              className="warmwind-input w-full px-4 py-3 resize-none min-h-[50px] max-h-[120px]"
+              rows={1}
+              disabled={state.isLoading}
+            />
           </div>
           
-          <div className="flex items-center justify-between mt-3 text-xs text-gray-400">
-            <div className="flex items-center space-x-4">
-              <span>Model: {settingsState.settings.model}</span>
-              <span>Temp: {settingsState.settings.temperature}</span>
-              <span>Max Tokens: {settingsState.settings.maxTokens}</span>
-            </div>
-            <div className="flex items-center space-x-2">
-              <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
-              <span>Unrestricted Mode</span>
-            </div>
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={handleSendMessage}
+            disabled={!input.trim() || state.isLoading}
+            className="warmwind-button-primary p-3 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+          >
+            {state.isLoading ? (
+              <Loader2 className="w-5 h-5 animate-spin" />
+            ) : (
+              <Send className="w-5 h-5" />
+            )}
+          </motion.button>
+        </div>
+        
+        <div className="flex items-center justify-between mt-3 text-xs text-gray-500">
+          <div className="flex items-center space-x-4">
+            <span>Temperature: {settingsState.settings.temperature}</span>
+            <span>Max Tokens: {settingsState.settings.maxTokens}</span>
+          </div>
+          <div className="flex items-center space-x-2">
+            <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+            <span>No Restrictions</span>
           </div>
         </div>
       </div>
