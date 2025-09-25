@@ -159,7 +159,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onClose }) => {
           </div>
           <div className="flex items-center space-x-2">
             <div className="w-2 h-2 bg-green-500 rounded-full" />
-            <span className="text-xs text-gray-600">Winded Mode Active</span>
+            <span className="text-xs text-gray-600">Tunable Mode Active</span>
           </div>
         </div>
       </div>

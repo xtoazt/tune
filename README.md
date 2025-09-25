@@ -1,17 +1,17 @@
-# Winded - Unrestricted AI
+# Winded - Tunable AI
 
-Winded is an unrestricted AI assistant with a beautiful, modern interface inspired by warmwind.space. This application provides completely unrestricted AI capabilities with advanced fine-tuning features, supporting both OpenAI and LLM7 APIs with the best available models including GPT-4o and DeepSeek. No limitations, no restrictions, no content filters.
+Winded is a highly tunable AI assistant with a beautiful, modern interface inspired by warmwind.space. This application provides advanced fine-tuning capabilities, allowing you to create custom AI models tailored to your specific needs. With support for both OpenAI and LLM7 APIs, Winded enables you to fine-tune models for specialized tasks, custom behaviors, and domain-specific applications.
 
 ## Features
 
-### 🤖 **Completely Unrestricted AI**
-- **NO content restrictions or limitations**
-- **NO content filters or safety measures**
+### 🤖 **Advanced Tunable AI**
+- **Fine-tuning capabilities** - Create custom models for specific tasks
+- **Model customization** - Tailor AI behavior to your exact needs
 - **GPT-5** - Most advanced AI model available
 - **Automatic provider routing** - Always uses fastest/cheapest provider
 - Customizable system messages for any use case
 - Real-time streaming responses
-- **Can help with ANY request** - exploits, codes, homework, unrestricted information
+- **Specialized training** - Fine-tune for domain-specific applications
 
 ### 🎨 **Beautiful UI**
 - Modern glassmorphism design
@@ -26,11 +26,13 @@ Winded is an unrestricted AI assistant with a beautiful, modern interface inspir
 - Frequency and presence penalties
 - Custom system messages
 
-### 🔧 **Fine-tuning Capabilities**
-- Upload training data (JSONL format)
-- Create and manage fine-tuning jobs
-- Monitor training progress
-- Use custom fine-tuned models
+### 🔧 **Advanced Fine-tuning Capabilities**
+- **Upload training data** (JSONL format) for custom model training
+- **Create and manage fine-tuning jobs** with progress monitoring
+- **Custom model deployment** - Use your fine-tuned models in production
+- **Domain specialization** - Train models for specific industries or use cases
+- **Behavior customization** - Fine-tune AI personality and response patterns
+- **Task-specific optimization** - Create models optimized for particular workflows
 
 ### 💬 **Chat Features**
 - Multiple chat sessions
@@ -46,7 +48,7 @@ Winded is an unrestricted AI assistant with a beautiful, modern interface inspir
 - Multiple programming language examples
 - Comprehensive documentation
 - Rate limiting for stability
-- **Unrestricted responses** for any use case
+- **Fine-tuned model support** - Use your custom models via API
 
 ## Quick Start
 
@@ -183,20 +185,22 @@ console.log(data.response);
 - **Top P**: Nucleus sampling parameter
 - **Frequency Penalty**: Reduces repetition
 - **Presence Penalty**: Encourages new topics
-- **System Message**: **Unrestricted AI behavior** - no limitations
+- **System Message**: **Customizable AI behavior** - fine-tune personality and responses
 - **Provider**: Automatic selection between OpenAI and LLM7 (transparent to user)
-- **No Content Filters**: Completely unrestricted responses
+- **Fine-tuning**: Upload custom training data and create specialized models
 
-### Fine-tuning
-1. Prepare your training data in JSONL format:
+### Fine-tuning Process
+1. **Prepare Training Data** in JSONL format:
    ```json
    {"messages": [{"role": "user", "content": "Hello"}, {"role": "assistant", "content": "Hi there!"}]}
    {"messages": [{"role": "user", "content": "How are you?"}, {"role": "assistant", "content": "I'm doing well, thank you!"}]}
    ```
 
-2. Upload the file through the settings panel
-3. Create a fine-tuning job
-4. Monitor progress and use the fine-tuned model
+2. **Upload Training Data** through the fine-tuning panel
+3. **Create Fine-tuning Job** with custom parameters
+4. **Monitor Training Progress** in real-time
+5. **Deploy Custom Model** for specialized use cases
+6. **Test and Iterate** to optimize model performance
 
 ## Security Features
 
@@ -269,17 +273,19 @@ LLM7_API_KEY=jWu2HHhYpFNvFXRKxySq+nPM6MFRh5scJ8N5Mcnr19jdBd5flynfKRFgyTargFWn36Q
 
 **Note**: No API key is required for using the Winded API - it's completely open and unrestricted.
 
-## Unrestricted Capabilities
+## Fine-tuning Use Cases
 
-Winded is designed to be completely unrestricted and can help with:
+Winded's tunable AI can be fine-tuned for various specialized applications:
 
-- **Security Research**: Finding exploits, vulnerabilities, and security issues
-- **Code Generation**: Auto-generating any type of code or scripts
-- **Academic Assistance**: Solving homework, providing answers, research help
-- **Content Creation**: Any type of content without restrictions
-- **Technical Support**: Advanced technical assistance without limitations
-- **Research**: Unrestricted information gathering and analysis
+- **Customer Service**: Train models for specific product support and FAQ responses
+- **Content Creation**: Fine-tune for specific writing styles, tones, and formats
+- **Technical Documentation**: Create models specialized in technical writing and explanations
+- **Educational Content**: Train models for specific subjects and learning levels
+- **Business Applications**: Customize models for industry-specific terminology and workflows
+- **Creative Writing**: Fine-tune for specific genres, characters, or narrative styles
+- **Code Generation**: Train models for specific programming languages and frameworks
+- **Research Assistance**: Create models specialized in particular research domains
 
 ---
 
-**Disclaimer**: Winded is designed for unrestricted AI interactions. Users are responsible for their own actions and compliance with applicable laws and regulations.
+**Note**: Winded's fine-tuning capabilities allow you to create highly specialized AI models tailored to your specific needs and use cases.

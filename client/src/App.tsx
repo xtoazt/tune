@@ -3,13 +3,14 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Toaster } from 'react-hot-toast';
 import ChatInterface from './components/ChatInterface';
 import Sidebar from './components/Sidebar';
-import Header from './components/Header';
 import SettingsModal from './components/SettingsModal';
+import APIDocumentation from './components/APIDocumentation';
 import { ChatProvider } from './contexts/ChatContext';
 import { SettingsProvider, useSettings } from './contexts/SettingsContext';
 
 function AppContent() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [apiDocsOpen, setApiDocsOpen] = useState(false);
   const { state: settingsState } = useSettings();
 
   return (
@@ -29,11 +30,17 @@ function AppContent() {
 
           {/* Center Title */}
           <div className="flex-1 text-center">
-            <h1 className="text-lg font-medium text-gray-800">Unrestricted AI Assistant</h1>
+            <h1 className="text-lg font-medium text-gray-800">Tunable AI Assistant</h1>
           </div>
 
           {/* Right Actions */}
           <div className="flex items-center space-x-3">
+            <button
+              onClick={() => setApiDocsOpen(true)}
+              className="warmwind-button px-4 py-2 text-sm"
+            >
+              API Docs
+            </button>
             <button
               onClick={() => setSidebarOpen(true)}
               className="warmwind-button px-4 py-2 text-sm"
@@ -85,6 +92,11 @@ function AppContent() {
       <SettingsModal 
         isOpen={settingsState.isSettingsOpen} 
         onClose={() => settingsState.dispatch({ type: 'SET_SETTINGS_OPEN', payload: false })} 
+      />
+      
+      <APIDocumentation 
+        isOpen={apiDocsOpen} 
+        onClose={() => setApiDocsOpen(false)} 
       />
       
       <Toaster

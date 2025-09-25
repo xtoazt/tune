@@ -1,7 +1,7 @@
 {
   "name": "winded",
   "version": "1.0.0",
-  "description": "Winded - Unrestricted AI with advanced capabilities",
+  "description": "Winded - Tunable AI with advanced fine-tuning capabilities",
   "main": "server/index.js",
   "scripts": {
     "dev": "concurrently \"npm run server\" \"npm run client\"",
@@ -13,10 +13,18 @@
     "install-all": "npm install && cd server && npm install && cd ../client && npm install",
     "vercel-build": "npm run build:server && npm run build"
   },
-  "keywords": ["ai", "openai", "chatbot", "fine-tuning"],
+  "keywords": [
+    "ai",
+    "openai",
+    "chatbot",
+    "fine-tuning"
+  ],
   "author": "Rohan",
   "license": "MIT",
   "devDependencies": {
     "concurrently": "^8.2.2"
+  },
+  "dependencies": {
+    "axios": "^1.12.2"
   }
 }

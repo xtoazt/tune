@@ -9,7 +9,7 @@ import TypingIndicator from './TypingIndicator';
 import toast from 'react-hot-toast';
 
 const ChatInterface: React.FC = () => {
-  const { currentSession, addMessage, updateMessage, setLoading, setStreaming, state } = useChat();
+  const { currentSession, addMessage, updateMessage, setLoading, setStreaming, state, createSession } = useChat();
   const { state: settingsState } = useSettings();
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
@@ -43,6 +43,10 @@ const ChatInterface: React.FC = () => {
       role: 'assistant',
       content: '',
     });
+    
+    // Get the actual message ID from the last message
+    const lastMessage = currentSession.messages[currentSession.messages.length - 1];
+    const actualAssistantMessageId = lastMessage?.id || assistantMessageId;
 
     setLoading(true);
     setStreaming(true);
@@ -67,7 +71,7 @@ const ChatInterface: React.FC = () => {
           system_message: settingsState.settings.systemMessage,
         }, (chunk) => {
           fullResponse += chunk;
-          updateMessage(currentSession.id, assistantMessageId, fullResponse);
+          updateMessage(currentSession.id, actualAssistantMessageId, fullResponse);
         });
       } else {
         // Non-streaming response
@@ -82,12 +86,12 @@ const ChatInterface: React.FC = () => {
           system_message: settingsState.settings.systemMessage,
         });
 
-        updateMessage(currentSession.id, assistantMessageId, response.message.content);
+        updateMessage(currentSession.id, actualAssistantMessageId, response.message.content);
       }
     } catch (error) {
       console.error('Error sending message:', error);
       toast.error('Failed to send message. Please try again.');
-      updateMessage(currentSession.id, assistantMessageId, 'Sorry, I encountered an error. Please try again.');
+      updateMessage(currentSession.id, actualAssistantMessageId, 'Sorry, I encountered an error. Please try again.');
     } finally {
       setLoading(false);
       setStreaming(false);
@@ -122,15 +126,18 @@ const ChatInterface: React.FC = () => {
             </div>
             <h2 className="text-3xl font-semibold text-gray-800 mb-4">Welcome to Winded</h2>
             <p className="text-lg text-gray-600 mb-8">
-              Create a new chat session to start conversing with your unrestricted AI assistant. 
-              No limitations, no restrictions, complete freedom.
+              Create a new chat session to start conversing with your tunable AI assistant. 
+              Fine-tune models, customize behavior, and create specialized AI solutions.
             </p>
           </div>
           
           <div className="flex items-center justify-center space-x-3 mb-8">
-            <div className="warmwind-button-primary px-6 py-3 text-sm font-medium">
+            <button
+              onClick={() => createSession('New Chat', settingsState.settings.model, settingsState.settings.systemMessage)}
+              className="warmwind-button-primary px-6 py-3 text-sm font-medium"
+            >
               Start New Session
-            </div>
+            </button>
             <div className="warmwind-button px-6 py-3 text-sm font-medium">
               View Examples
             </div>
@@ -138,7 +145,7 @@ const ChatInterface: React.FC = () => {
           
           <div className="flex items-center justify-center space-x-2 text-sm text-gray-500">
             <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-            <span>AI Ready • Unrestricted Mode Active</span>
+            <span>AI Ready • Tunable Mode Active</span>
           </div>
         </div>
       </div>
@@ -155,7 +162,7 @@ const ChatInterface: React.FC = () => {
         </div>
         <div className="flex items-center space-x-2">
           <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-          <span className="text-sm text-gray-500">Unrestricted Mode</span>
+          <span className="text-sm text-gray-500">Tunable Mode</span>
         </div>
       </div>
 
@@ -231,7 +238,7 @@ const ChatInterface: React.FC = () => {
           </div>
           <div className="flex items-center space-x-2">
             <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-            <span>No Restrictions</span>
+            <span>Fine-tunable</span>
           </div>
         </div>
       </div>

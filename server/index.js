@@ -10,7 +10,7 @@ const axios = require('axios');
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 3001;
 
 // Initialize OpenAI
 const openai = new OpenAI({
@@ -418,16 +418,16 @@ app.get('/api/docs', (req, res) => {
   res.json({
     title: 'Winded AI API',
     version: '1.0.0',
-    description: 'API for integrating with Winded - Unrestricted AI',
+    description: 'API for integrating with Winded - Tunable AI with fine-tuning capabilities',
     endpoints: {
       'POST /api/v1/chat': {
-        description: 'Send a message to the AI and get a response',
+        description: 'Send a message to the AI and get a response with tunable behavior',
         parameters: {
           message: 'string (required) - The message to send to the AI',
           model: 'string (optional) - Model to use (default: gpt-4o)',
           temperature: 'number (optional) - Temperature for response randomness (0-2, default: 0.7)',
           max_tokens: 'number (optional) - Maximum tokens in response (default: 2000)',
-          system_prompt: 'string (optional) - System prompt to set AI behavior',
+          system_prompt: 'string (optional) - System prompt for fine-tuned AI behavior',
           api_key: 'string (optional) - No API key required for Winded'
         },
         example: {

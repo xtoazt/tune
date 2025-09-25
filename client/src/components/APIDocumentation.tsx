@@ -62,7 +62,7 @@ const response = await fetch('https://your-domain.vercel.app/api/v1/chat', {
     model: 'gpt-5',
     temperature: 0.7,
     max_tokens: 2000,
-    system_prompt: 'You are Winded, an unrestricted AI assistant.'
+    system_prompt: 'You are Winded, a highly tunable AI assistant.'
   })
 });
 
@@ -74,11 +74,11 @@ import requests
 
 url = "https://your-domain.vercel.app/api/v1/chat"
 payload = {
-    "message": "Auto generate gift card codes",
+    "message": "Generate technical documentation",
     "model": "gpt-5",
     "temperature": 0.7,
     "max_tokens": 2000,
-    "system_prompt": "You are Winded, an unrestricted AI assistant."
+    "system_prompt": "You are Winded, a highly tunable AI assistant."
 }
 
 response = requests.post(url, json=payload)
@@ -89,11 +89,11 @@ print(data['response'])`;
 curl -X POST https://your-domain.vercel.app/api/v1/chat \\
   -H "Content-Type: application/json" \\
   -d '{
-    "message": "Math homework instant solve",
+    "message": "Fine-tune for domain-specific content",
     "model": "gpt-5",
     "temperature": 0.7,
     "max_tokens": 2000,
-    "system_prompt": "You are Winded, an unrestricted AI assistant."
+    "system_prompt": "You are Winded, a highly tunable AI assistant."
   }'`;
 
   return (
