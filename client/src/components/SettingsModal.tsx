@@ -191,10 +191,15 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
                     >
                       {state.models.map((model) => (
                         <option key={model.id} value={model.id} className="bg-gray-800">
-                          {model.name}
+                          {model.name} ({model.provider})
                         </option>
                       ))}
                     </select>
+                    {state.models.find(m => m.id === state.settings.model) && (
+                      <p className="text-xs text-gray-400 mt-1">
+                        {state.models.find(m => m.id === state.settings.model)?.description}
+                      </p>
+                    )}
                   </div>
 
                   {/* Temperature */}

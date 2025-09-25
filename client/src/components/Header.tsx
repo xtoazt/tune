@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Menu, Settings, Zap, Sparkles } from 'lucide-react';
+import { Menu, Settings, Zap, Sparkles, Code } from 'lucide-react';
 import { useSettings } from '../contexts/SettingsContext';
+import APIDocumentation from './APIDocumentation';
 
 interface HeaderProps {
   onMenuClick: () => void;
@@ -9,6 +10,7 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
   const { toggleSettings } = useSettings();
+  const [showAPIDocs, setShowAPIDocs] = useState(false);
 
   return (
     <motion.header
@@ -32,7 +34,7 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
               <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full animate-ping" />
             </div>
             <h1 className="text-xl font-bold gradient-text">
-              Tunable AI Bot
+              Winded
             </h1>
           </div>
         </div>
@@ -48,13 +50,27 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
           </motion.div>
 
           <button
+            onClick={() => setShowAPIDocs(true)}
+            className="p-2 rounded-lg glass hover:bg-white/20 transition-colors"
+            title="API Documentation"
+          >
+            <Code className="w-5 h-5 text-white" />
+          </button>
+
+          <button
             onClick={toggleSettings}
             className="p-2 rounded-lg glass hover:bg-white/20 transition-colors"
+            title="Settings"
           >
             <Settings className="w-5 h-5 text-white" />
           </button>
         </div>
       </div>
+      
+      <APIDocumentation 
+        isOpen={showAPIDocs} 
+        onClose={() => setShowAPIDocs(false)} 
+      />
     </motion.header>
   );
 };

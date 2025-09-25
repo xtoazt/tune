@@ -121,9 +121,9 @@ const ChatInterface: React.FC = () => {
           className="text-center"
         >
           <Bot className="w-16 h-16 text-blue-400 mx-auto mb-4 animate-float" />
-          <h2 className="text-2xl font-bold text-white mb-2">Welcome to Tunable AI Bot</h2>
+          <h2 className="text-2xl font-bold text-white mb-2">Welcome to Winded</h2>
           <p className="text-gray-300 mb-6 max-w-md">
-            Create a new chat session to start conversing with your unrestricted AI assistant.
+            Create a new chat session to start conversing with your unrestricted AI assistant. No limitations, no restrictions.
           </p>
           <div className="flex items-center justify-center space-x-2 text-sm text-gray-400">
             <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />

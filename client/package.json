@@ -1,12 +1,13 @@
 {
-  "name": "tunable-ai-client",
+  "name": "winded-client",
   "version": "1.0.0",
-  "description": "Frontend for tunable AI bot",
+  "description": "Frontend for Winded AI",
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
-    "preview": "vite preview"
+    "build": "vite build",
+    "preview": "vite preview",
+    "type-check": "tsc --noEmit"
   },
   "dependencies": {
     "react": "^18.2.0",
