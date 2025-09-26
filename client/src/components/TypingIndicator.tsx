@@ -1,26 +1,29 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { Bot } from 'lucide-react';
 
 const TypingIndicator: React.FC = () => {
   return (
-    <div className="flex items-center space-x-1 p-3 rounded-lg bg-gray-50 border border-gray-200">
-      <span className="text-sm text-gray-600 mr-2">Winded is typing</span>
-      <div className="flex space-x-1">
-        {[0, 1, 2].map((index) => (
-          <motion.div
-            key={index}
-            className="w-2 h-2 bg-gray-400 rounded-full"
-            animate={{
-              scale: [1, 1.2, 1],
-              opacity: [0.5, 1, 0.5],
-            }}
-            transition={{
-              duration: 1,
-              repeat: Infinity,
-              delay: index * 0.2,
-            }}
-          />
-        ))}
+    <div className="flex items-start space-x-4">
+      {/* Avatar */}
+      <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-gray-700 to-gray-800 border border-gray-600 flex items-center justify-center flex-shrink-0">
+        <Bot className="w-5 h-5 text-white" />
+      </div>
+
+      {/* Typing Indicator */}
+      <div className="flex-1">
+        <div className="bg-gray-700 border border-gray-600 rounded-2xl rounded-bl-md p-6">
+          <div className="flex items-center space-x-3 mb-3">
+            <span className="text-sm font-semibold text-white">Winded</span>
+            <span className="text-xs text-gray-400">is typing</span>
+          </div>
+          
+          <div className="flex items-center space-x-2">
+            <div className="typing-indicator"></div>
+            <div className="typing-indicator"></div>
+            <div className="typing-indicator"></div>
+          </div>
+        </div>
       </div>
     </div>
   );

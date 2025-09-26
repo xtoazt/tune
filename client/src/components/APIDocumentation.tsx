@@ -9,7 +9,8 @@ import {
   Key,
   Zap,
   Bot,
-  MessageSquare
+  MessageSquare,
+  BookOpen
 } from 'lucide-react';
 import { apiService } from '../services/api';
 import toast from 'react-hot-toast';
@@ -103,223 +104,256 @@ curl -X POST https://your-domain.vercel.app/api/v1/chat \\
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-50 flex items-center justify-center p-4"
+          className="api-docs-overlay"
+          onClick={onClose}
         >
-          <div
-            className="absolute inset-0 bg-black bg-opacity-50"
-            onClick={onClose}
-          />
-          
           <motion.div
-            initial={{ scale: 0.9, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0.9, opacity: 0 }}
-            className="relative w-full max-w-6xl max-h-[90vh] overflow-hidden glass rounded-2xl border border-white/20"
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            className="api-docs-modal"
+            onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}
-            <div className="flex items-center justify-between p-6 border-b border-white/20">
+            <div className="flex items-center justify-between mb-8">
               <div className="flex items-center space-x-3">
-                <Code className="w-6 h-6 text-blue-400" />
-                <h2 className="text-2xl font-bold text-white">API Documentation</h2>
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center">
+                  <BookOpen className="w-5 h-5 text-white" />
+                </div>
+                <div>
+                  <h2 className="text-2xl font-bold text-white">Winded AI API</h2>
+                  <p className="text-gray-400">Developer API Documentation</p>
+                </div>
               </div>
               <button
                 onClick={onClose}
-                className="p-2 rounded-lg hover:bg-white/20 transition-colors"
+                className="p-2 rounded-lg hover:bg-gray-700 transition-colors"
               >
-                <X className="w-5 h-5 text-white" />
+                <X className="w-5 h-5 text-gray-400" />
               </button>
             </div>
 
-            {/* Content */}
-            <div className="p-6 overflow-y-auto max-h-[70vh]">
-              {docs && (
-                <div className="space-y-8">
-                  {/* Overview */}
-                  <div>
-                    <h3 className="text-xl font-semibold text-white mb-4 flex items-center space-x-2">
-                      <Globe className="w-5 h-5" />
-                      <span>Overview</span>
-                    </h3>
-                    <div className="glass p-4 rounded-lg">
-                      <p className="text-gray-300 mb-2">{docs.description}</p>
-                      <div className="flex items-center space-x-4 text-sm text-gray-400">
-                        <span>Version: {docs.version}</span>
-                        <span>Rate Limit: {docs.rate_limits}</span>
+            <div className="space-y-8">
+              {/* Overview */}
+              <div className="space-y-4">
+                <div className="flex items-center space-x-3">
+                  <Globe className="w-5 h-5 text-blue-400" />
+                  <h3 className="text-lg font-semibold text-white">Overview</h3>
+                </div>
+                <div className="bg-gray-800 border border-gray-700 rounded-xl p-6">
+                  <p className="text-gray-300 mb-4">
+                    The Winded AI API provides access to advanced tunable AI capabilities with fine-tuning support. 
+                    No API key required for basic usage.
+                  </p>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="flex items-center space-x-3 p-3 bg-gray-700 rounded-lg">
+                      <Zap className="w-5 h-5 text-blue-400" />
+                      <span className="text-sm text-gray-300">Fast Responses</span>
+                    </div>
+                    <div className="flex items-center space-x-3 p-3 bg-gray-700 rounded-lg">
+                      <Bot className="w-5 h-5 text-blue-400" />
+                      <span className="text-sm text-gray-300">GPT-5 Powered</span>
+                    </div>
+                    <div className="flex items-center space-x-3 p-3 bg-gray-700 rounded-lg">
+                      <MessageSquare className="w-5 h-5 text-blue-400" />
+                      <span className="text-sm text-gray-300">Fine-tuning Ready</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Endpoint */}
+              <div className="space-y-4">
+                <div className="flex items-center space-x-3">
+                  <Code className="w-5 h-5 text-blue-400" />
+                  <h3 className="text-lg font-semibold text-white">API Endpoint</h3>
+                </div>
+                <div className="bg-gray-800 border border-gray-700 rounded-xl p-6">
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center space-x-3">
+                      <span className="px-3 py-1 bg-green-600 text-white text-sm font-medium rounded-full">POST</span>
+                      <code className="text-blue-400 font-mono">/api/v1/chat</code>
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-4">
+                    <div>
+                      <h4 className="text-white font-medium mb-2">Request Body</h4>
+                      <div className="bg-gray-900 border border-gray-600 rounded-lg p-4">
+                        <pre className="text-gray-300 text-sm overflow-x-auto">
+{`{
+  "message": "string",
+  "model": "gpt-5",
+  "temperature": 0.7,
+  "max_tokens": 2000,
+  "system_prompt": "string"
+}`}
+                        </pre>
                       </div>
                     </div>
-                  </div>
-
-                  {/* Authentication */}
-                  <div>
-                    <h3 className="text-xl font-semibold text-white mb-4 flex items-center space-x-2">
-                      <Key className="w-5 h-5" />
-                      <span>Authentication</span>
-                    </h3>
-                    <div className="glass p-4 rounded-lg">
-                      <p className="text-gray-300">{docs.authentication}</p>
-                    </div>
-                  </div>
-
-                  {/* Available Models */}
-                  <div>
-                    <h3 className="text-xl font-semibold text-white mb-4 flex items-center space-x-2">
-                      <Bot className="w-5 h-5" />
-                      <span>Available Models</span>
-                    </h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {docs.available_models.map((model: any) => (
-                        <div key={model.id} className="glass p-4 rounded-lg">
-                          <div className="flex items-center justify-between mb-2">
-                            <h4 className="font-medium text-white">{model.name}</h4>
-                            <span className="text-xs bg-blue-500/20 text-blue-400 px-2 py-1 rounded">
-                              {model.provider}
-                            </span>
-                          </div>
-                          <p className="text-sm text-gray-400">{model.description}</p>
-                          <code className="text-xs text-gray-300 mt-2 block">{model.id}</code>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* API Endpoints */}
-                  <div>
-                    <h3 className="text-xl font-semibold text-white mb-4 flex items-center space-x-2">
-                      <MessageSquare className="w-5 h-5" />
-                      <span>API Endpoints</span>
-                    </h3>
                     
-                    {/* Chat Endpoint */}
-                    <div className="glass p-4 rounded-lg mb-4">
-                      <div className="flex items-center justify-between mb-3">
-                        <h4 className="font-medium text-white">POST /api/v1/chat</h4>
-                        <span className="text-xs bg-green-500/20 text-green-400 px-2 py-1 rounded">
-                          Chat
-                        </span>
-                      </div>
-                      <p className="text-gray-300 mb-4">{docs.endpoints['POST /api/v1/chat'].description}</p>
-                      
-                      <div className="space-y-3">
-                        <h5 className="font-medium text-white">Parameters:</h5>
-                        <div className="space-y-2">
-                          {Object.entries(docs.endpoints['POST /api/v1/chat'].parameters).map(([key, value]) => (
-                            <div key={key} className="flex items-start space-x-3">
-                              <code className="text-blue-400 text-sm min-w-0 flex-shrink-0">{key}</code>
-                              <span className="text-gray-300 text-sm">{value as string}</span>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Code Examples */}
-                  <div>
-                    <h3 className="text-xl font-semibold text-white mb-4 flex items-center space-x-2">
-                      <Code className="w-5 h-5" />
-                      <span>Code Examples</span>
-                    </h3>
-                    
-                    <div className="space-y-4">
-                      {/* JavaScript Example */}
-                      <div className="glass p-4 rounded-lg">
-                        <div className="flex items-center justify-between mb-3">
-                          <h4 className="font-medium text-white">JavaScript/Node.js</h4>
-                          <button
-                            onClick={() => copyToClipboard(exampleCode, 'js')}
-                            className="p-1 rounded hover:bg-white/20 transition-colors"
-                          >
-                            {copiedCode === 'js' ? (
-                              <Check className="w-4 h-4 text-green-400" />
-                            ) : (
-                              <Copy className="w-4 h-4 text-gray-400" />
-                            )}
-                          </button>
-                        </div>
-                        <pre className="text-sm text-gray-300 overflow-x-auto">
-                          <code>{exampleCode}</code>
-                        </pre>
-                      </div>
-
-                      {/* Python Example */}
-                      <div className="glass p-4 rounded-lg">
-                        <div className="flex items-center justify-between mb-3">
-                          <h4 className="font-medium text-white">Python</h4>
-                          <button
-                            onClick={() => copyToClipboard(pythonExample, 'python')}
-                            className="p-1 rounded hover:bg-white/20 transition-colors"
-                          >
-                            {copiedCode === 'python' ? (
-                              <Check className="w-4 h-4 text-green-400" />
-                            ) : (
-                              <Copy className="w-4 h-4 text-gray-400" />
-                            )}
-                          </button>
-                        </div>
-                        <pre className="text-sm text-gray-300 overflow-x-auto">
-                          <code>{pythonExample}</code>
-                        </pre>
-                      </div>
-
-                      {/* cURL Example */}
-                      <div className="glass p-4 rounded-lg">
-                        <div className="flex items-center justify-between mb-3">
-                          <h4 className="font-medium text-white">cURL</h4>
-                          <button
-                            onClick={() => copyToClipboard(curlExample, 'curl')}
-                            className="p-1 rounded hover:bg-white/20 transition-colors"
-                          >
-                            {copiedCode === 'curl' ? (
-                              <Check className="w-4 h-4 text-green-400" />
-                            ) : (
-                              <Copy className="w-4 h-4 text-gray-400" />
-                            )}
-                          </button>
-                        </div>
-                        <pre className="text-sm text-gray-300 overflow-x-auto">
-                          <code>{curlExample}</code>
-                        </pre>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Response Format */}
-                  <div>
-                    <h3 className="text-xl font-semibold text-white mb-4">Response Format</h3>
-                    <div className="glass p-4 rounded-lg">
-                      <pre className="text-sm text-gray-300 overflow-x-auto">
-                        <code>{`{
-  "success": true,
-  "response": "Hello! I'm doing well, thank you for asking. How can I help you today?",
-  "model": "deepseek-chat",
-  "provider": "llm7",
+                    <div>
+                      <h4 className="text-white font-medium mb-2">Response</h4>
+                      <div className="bg-gray-900 border border-gray-600 rounded-lg p-4">
+                        <pre className="text-gray-300 text-sm overflow-x-auto">
+{`{
+  "response": "string",
+  "model": "gpt-5",
   "usage": {
-    "prompt_tokens": 20,
-    "completion_tokens": 25,
-    "total_tokens": 45
+    "total_tokens": 150,
+    "prompt_tokens": 50,
+    "completion_tokens": 100
   }
-}`}</code>
+}`}
+                        </pre>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Code Examples */}
+              <div className="space-y-4">
+                <div className="flex items-center space-x-3">
+                  <Code className="w-5 h-5 text-blue-400" />
+                  <h3 className="text-lg font-semibold text-white">Code Examples</h3>
+                </div>
+                
+                <div className="space-y-6">
+                  {/* JavaScript */}
+                  <div className="bg-gray-800 border border-gray-700 rounded-xl p-6">
+                    <div className="flex items-center justify-between mb-4">
+                      <h4 className="text-white font-medium">JavaScript/Node.js</h4>
+                      <button
+                        onClick={() => copyToClipboard(exampleCode, 'js')}
+                        className="p-2 rounded-lg hover:bg-gray-700 transition-colors"
+                      >
+                        {copiedCode === 'js' ? (
+                          <Check className="w-4 h-4 text-green-400" />
+                        ) : (
+                          <Copy className="w-4 h-4 text-gray-400" />
+                        )}
+                      </button>
+                    </div>
+                    <div className="bg-gray-900 border border-gray-600 rounded-lg p-4">
+                      <pre className="text-gray-300 text-sm overflow-x-auto">
+                        <code>{exampleCode}</code>
+                      </pre>
+                    </div>
+                  </div>
+
+                  {/* Python */}
+                  <div className="bg-gray-800 border border-gray-700 rounded-xl p-6">
+                    <div className="flex items-center justify-between mb-4">
+                      <h4 className="text-white font-medium">Python</h4>
+                      <button
+                        onClick={() => copyToClipboard(pythonExample, 'python')}
+                        className="p-2 rounded-lg hover:bg-gray-700 transition-colors"
+                      >
+                        {copiedCode === 'python' ? (
+                          <Check className="w-4 h-4 text-green-400" />
+                        ) : (
+                          <Copy className="w-4 h-4 text-gray-400" />
+                        )}
+                      </button>
+                    </div>
+                    <div className="bg-gray-900 border border-gray-600 rounded-lg p-4">
+                      <pre className="text-gray-300 text-sm overflow-x-auto">
+                        <code>{pythonExample}</code>
+                      </pre>
+                    </div>
+                  </div>
+
+                  {/* cURL */}
+                  <div className="bg-gray-800 border border-gray-700 rounded-xl p-6">
+                    <div className="flex items-center justify-between mb-4">
+                      <h4 className="text-white font-medium">cURL</h4>
+                      <button
+                        onClick={() => copyToClipboard(curlExample, 'curl')}
+                        className="p-2 rounded-lg hover:bg-gray-700 transition-colors"
+                      >
+                        {copiedCode === 'curl' ? (
+                          <Check className="w-4 h-4 text-green-400" />
+                        ) : (
+                          <Copy className="w-4 h-4 text-gray-400" />
+                        )}
+                      </button>
+                    </div>
+                    <div className="bg-gray-900 border border-gray-600 rounded-lg p-4">
+                      <pre className="text-gray-300 text-sm overflow-x-auto">
+                        <code>{curlExample}</code>
                       </pre>
                     </div>
                   </div>
                 </div>
-              )}
+              </div>
+
+              {/* Fine-tuning Use Cases */}
+              <div className="space-y-4">
+                <div className="flex items-center space-x-3">
+                  <Zap className="w-5 h-5 text-blue-400" />
+                  <h3 className="text-lg font-semibold text-white">Fine-tuning Use Cases</h3>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="bg-gray-800 border border-gray-700 rounded-xl p-6">
+                    <h4 className="text-white font-medium mb-3">Customer Service</h4>
+                    <p className="text-gray-400 text-sm mb-3">
+                      Train AI to handle specific product support scenarios with your company's tone and knowledge.
+                    </p>
+                    <div className="bg-gray-900 border border-gray-600 rounded-lg p-3">
+                      <code className="text-blue-400 text-sm">
+                        "Help me resolve billing issues"
+                      </code>
+                    </div>
+                  </div>
+                  
+                  <div className="bg-gray-800 border border-gray-700 rounded-xl p-6">
+                    <h4 className="text-white font-medium mb-3">Content Creation</h4>
+                    <p className="text-gray-400 text-sm mb-3">
+                      Generate marketing copy, blog posts, and social media content in your brand voice.
+                    </p>
+                    <div className="bg-gray-900 border border-gray-600 rounded-lg p-3">
+                      <code className="text-blue-400 text-sm">
+                        "Create product descriptions"
+                      </code>
+                    </div>
+                  </div>
+                  
+                  <div className="bg-gray-800 border border-gray-700 rounded-xl p-6">
+                    <h4 className="text-white font-medium mb-3">Technical Documentation</h4>
+                    <p className="text-gray-400 text-sm mb-3">
+                      Generate API docs, user guides, and technical specifications for your products.
+                    </p>
+                    <div className="bg-gray-900 border border-gray-600 rounded-lg p-3">
+                      <code className="text-blue-400 text-sm">
+                        "Document API endpoints"
+                      </code>
+                    </div>
+                  </div>
+                  
+                  <div className="bg-gray-800 border border-gray-700 rounded-xl p-6">
+                    <h4 className="text-white font-medium mb-3">Code Generation</h4>
+                    <p className="text-gray-400 text-sm mb-3">
+                      Generate code snippets, functions, and entire modules based on your coding standards.
+                    </p>
+                    <div className="bg-gray-900 border border-gray-600 rounded-lg p-3">
+                      <code className="text-blue-400 text-sm">
+                        "Generate React components"
+                      </code>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
 
             {/* Footer */}
-            <div className="p-6 border-t border-white/20">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-2 text-sm text-gray-400">
-                  <Zap className="w-4 h-4" />
-                  <span>Ready for integration</span>
-                </div>
-                <button
-                  onClick={onClose}
-                  className="px-6 py-2 bg-blue-500 hover:bg-blue-600 rounded-lg text-white font-medium transition-colors"
-                >
-                  Close
-                </button>
-              </div>
+            <div className="flex justify-end space-x-4 mt-8 pt-6 border-t border-gray-700">
+              <button
+                onClick={onClose}
+                className="dark-button dark-button-secondary"
+              >
+                Close
+              </button>
             </div>
           </motion.div>
         </motion.div>

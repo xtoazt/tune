@@ -1,125 +1,78 @@
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import { Toaster } from 'react-hot-toast';
+import { Menu, X } from 'lucide-react';
+import { ChatProvider } from './contexts/ChatContext';
+import { SettingsProvider } from './contexts/SettingsContext';
 import ChatInterface from './components/ChatInterface';
 import Sidebar from './components/Sidebar';
-import SettingsModal from './components/SettingsModal';
-import APIDocumentation from './components/APIDocumentation';
-import { ChatProvider } from './contexts/ChatContext';
-import { SettingsProvider, useSettings } from './contexts/SettingsContext';
-
-function AppContent() {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [apiDocsOpen, setApiDocsOpen] = useState(false);
-  const { state: settingsState } = useSettings();
-
-  return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Top Navigation */}
-      <nav className="bg-white border-b border-gray-200 px-6 py-4">
-        <div className="flex items-center justify-between">
-          {/* Logo */}
-          <div className="flex items-center space-x-3">
-            <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-gray-800 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-sm">W</span>
-              </div>
-              <span className="text-xl font-semibold text-gray-800">winded</span>
-            </div>
-          </div>
-
-          {/* Center Title */}
-          <div className="flex-1 text-center">
-            <h1 className="text-lg font-medium text-gray-800">Tunable AI Assistant</h1>
-          </div>
-
-          {/* Right Actions */}
-          <div className="flex items-center space-x-3">
-            <button
-              onClick={() => setApiDocsOpen(true)}
-              className="warmwind-button px-4 py-2 text-sm"
-            >
-              API Docs
-            </button>
-            <button
-              onClick={() => setSidebarOpen(true)}
-              className="warmwind-button px-4 py-2 text-sm"
-            >
-              Sessions
-            </button>
-            <button
-              onClick={() => settingsState.dispatch({ type: 'SET_SETTINGS_OPEN', payload: true })}
-              className="warmwind-button px-4 py-2 text-sm"
-            >
-              Settings
-            </button>
-            <div className="w-8 h-8 bg-gray-200 rounded-full"></div>
-          </div>
-        </div>
-      </nav>
-
-      {/* Main Content Area */}
-      <div className="flex-1 p-6">
-        <div className="max-w-7xl mx-auto">
-          <ChatInterface />
-        </div>
-      </div>
-
-      {/* Sidebar */}
-      <AnimatePresence>
-        {sidebarOpen && (
-          <>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="fixed inset-0 z-40 bg-black bg-opacity-25"
-              onClick={() => setSidebarOpen(false)}
-            />
-            <motion.div
-              initial={{ x: -400, opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              exit={{ x: -400, opacity: 0 }}
-              transition={{ duration: 0.3, ease: "easeInOut" }}
-              className="fixed inset-y-0 left-0 z-50 w-96 bg-white border-r border-gray-200 shadow-xl"
-            >
-              <Sidebar onClose={() => setSidebarOpen(false)} />
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
-      
-      <SettingsModal 
-        isOpen={settingsState.isSettingsOpen} 
-        onClose={() => settingsState.dispatch({ type: 'SET_SETTINGS_OPEN', payload: false })} 
-      />
-      
-      <APIDocumentation 
-        isOpen={apiDocsOpen} 
-        onClose={() => setApiDocsOpen(false)} 
-      />
-      
-      <Toaster
-        position="top-right"
-        toastOptions={{
-          duration: 4000,
-          style: {
-            background: '#ffffff',
-            border: '1px solid #e2e8f0',
-            color: '#2d3748',
-            boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
-          },
-        }}
-      />
-    </div>
-  );
-}
 
 function App() {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  const toggleSidebar = () => {
+    setSidebarOpen(!sidebarOpen);
+  };
+
   return (
     <SettingsProvider>
       <ChatProvider>
-        <AppContent />
+        <div className="h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 flex">
+          {/* Sidebar */}
+          <Sidebar isOpen={sidebarOpen} onToggle={toggleSidebar} />
+          
+          {/* Main Content */}
+          <div className="flex-1 flex flex-col min-w-0">
+            {/* Mobile Header */}
+            <div className="lg:hidden flex items-center justify-between p-4 border-b border-gray-700">
+              <button
+                onClick={toggleSidebar}
+                className="p-2 rounded-lg hover:bg-gray-700 transition-colors"
+              >
+                {sidebarOpen ? (
+                  <X className="w-6 h-6 text-white" />
+                ) : (
+                  <Menu className="w-6 h-6 text-white" />
+                )}
+              </button>
+              
+              <div className="flex items-center space-x-3">
+                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center">
+                  <span className="text-white font-bold text-sm">W</span>
+                </div>
+                <span className="text-white font-semibold">Winded</span>
+              </div>
+            </div>
+
+            {/* Chat Interface */}
+            <div className="flex-1 flex flex-col min-h-0">
+              <ChatInterface />
+            </div>
+          </div>
+        </div>
+        
+        <Toaster
+          position="top-right"
+          toastOptions={{
+            duration: 4000,
+            style: {
+              background: '#1f2937',
+              color: '#ffffff',
+              border: '1px solid #374151',
+            },
+            success: {
+              iconTheme: {
+                primary: '#10b981',
+                secondary: '#ffffff',
+              },
+            },
+            error: {
+              iconTheme: {
+                primary: '#ef4444',
+                secondary: '#ffffff',
+              },
+            },
+          }}
+        />
       </ChatProvider>
     </SettingsProvider>
   );

@@ -1,11 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Send, Loader2, Bot, User, Copy, Check } from 'lucide-react';
+import { Send, Loader2, Bot, User, Copy, Check, Settings, Code, Plus } from 'lucide-react';
 import { useChat } from '../contexts/ChatContext';
 import { useSettings } from '../contexts/SettingsContext';
 import { apiService } from '../services/api';
 import MessageBubble from './MessageBubble';
 import TypingIndicator from './TypingIndicator';
+import SettingsModal from './SettingsModal';
+import APIDocumentation from './APIDocumentation';
 import toast from 'react-hot-toast';
 
 const ChatInterface: React.FC = () => {
@@ -13,6 +15,8 @@ const ChatInterface: React.FC = () => {
   const { state: settingsState } = useSettings();
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const [apiDocsOpen, setApiDocsOpen] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
@@ -108,140 +112,159 @@ const ChatInterface: React.FC = () => {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setInput(e.target.value);
-    
-    // Auto-resize textarea
-    if (inputRef.current) {
-      inputRef.current.style.height = 'auto';
-      inputRef.current.style.height = Math.min(inputRef.current.scrollHeight, 120) + 'px';
-    }
+  };
+
+  const handleNewSession = () => {
+    createSession('New Chat', settingsState.settings.model, settingsState.settings.systemMessage);
   };
 
   if (!currentSession) {
     return (
-      <div className="flex items-center justify-center min-h-[600px]">
-        <div className="warmwind-container p-12 max-w-2xl text-center">
+      <div className="flex-1 flex items-center justify-center p-8">
+        <div className="text-center max-w-2xl">
           <div className="mb-8">
-            <div className="w-20 h-20 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
-              <Bot className="w-10 h-10 text-gray-600" />
+            <div className="w-24 h-24 mx-auto mb-6 rounded-2xl bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center">
+              <Bot className="w-12 h-12 text-white" />
             </div>
-            <h2 className="text-3xl font-semibold text-gray-800 mb-4">Welcome to Winded</h2>
-            <p className="text-lg text-gray-600 mb-8">
-              Create a new chat session to start conversing with your tunable AI assistant. 
-              Fine-tune models, customize behavior, and create specialized AI solutions.
+            <h1 className="text-4xl font-bold text-white mb-4">Welcome to Winded</h1>
+            <p className="text-xl text-gray-300 mb-8">
+              Your advanced tunable AI assistant with fine-tuning capabilities
             </p>
           </div>
           
-          <div className="flex items-center justify-center space-x-3 mb-8">
-            <button
-              onClick={() => createSession('New Chat', settingsState.settings.model, settingsState.settings.systemMessage)}
-              className="warmwind-button-primary px-6 py-3 text-sm font-medium"
-            >
-              Start New Session
-            </button>
-            <div className="warmwind-button px-6 py-3 text-sm font-medium">
-              View Examples
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <div className="feature-card">
+              <div className="w-12 h-12 rounded-xl bg-blue-600 flex items-center justify-center mb-4">
+                <Bot className="w-6 h-6 text-white" />
+              </div>
+              <h3 className="text-lg font-semibold text-white mb-2">Advanced AI</h3>
+              <p className="text-gray-400">Powered by GPT-5 with automatic provider routing for optimal performance</p>
+            </div>
+            
+            <div className="feature-card">
+              <div className="w-12 h-12 rounded-xl bg-purple-600 flex items-center justify-center mb-4">
+                <Settings className="w-6 h-6 text-white" />
+              </div>
+              <h3 className="text-lg font-semibold text-white mb-2">Fine-tuning</h3>
+              <p className="text-gray-400">Customize AI behavior for specific tasks and use cases</p>
             </div>
           </div>
-          
-          <div className="flex items-center justify-center space-x-2 text-sm text-gray-500">
-            <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-            <span>AI Ready • Tunable Mode Active</span>
-          </div>
+
+          <button
+            onClick={handleNewSession}
+            className="dark-button dark-button-primary text-lg px-8 py-4 rounded-2xl"
+          >
+            <Plus className="w-5 h-5 mr-2" />
+            Start New Chat
+          </button>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="warmwind-container p-8">
-      {/* Chat Header */}
-      <div className="flex items-center justify-between mb-6 pb-4 border-b border-gray-200">
-        <div>
-          <h3 className="text-lg font-semibold text-gray-800">{currentSession.title}</h3>
-          <p className="text-sm text-gray-500">Model: {settingsState.settings.model}</p>
+    <div className="flex-1 flex flex-col h-full">
+      {/* Header */}
+      <div className="flex items-center justify-between p-6 border-b border-gray-700">
+        <div className="flex items-center space-x-4">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center">
+            <Bot className="w-5 h-5 text-white" />
+          </div>
+          <div>
+            <h2 className="text-xl font-semibold text-white">{currentSession.title}</h2>
+            <p className="text-sm text-gray-400">
+              {state.isStreaming ? 'AI is responding...' : 'AI Ready • Tunable Mode Active'}
+            </p>
+          </div>
         </div>
-        <div className="flex items-center space-x-2">
-          <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-          <span className="text-sm text-gray-500">Tunable Mode</span>
+        
+        <div className="flex items-center space-x-3">
+          <button
+            onClick={() => setApiDocsOpen(true)}
+            className="dark-button dark-button-secondary"
+            title="API Documentation"
+          >
+            <Code className="w-4 h-4" />
+          </button>
+          <button
+            onClick={() => setSettingsOpen(true)}
+            className="dark-button dark-button-secondary"
+            title="Settings"
+          >
+            <Settings className="w-4 h-4" />
+          </button>
+          <button
+            onClick={handleNewSession}
+            className="dark-button dark-button-primary"
+            title="New Chat"
+          >
+            <Plus className="w-4 h-4" />
+          </button>
         </div>
       </div>
 
-      {/* Messages Area */}
-      <div className="space-y-4 mb-6 max-h-[500px] overflow-y-auto">
+      {/* Messages */}
+      <div className="flex-1 overflow-y-auto p-6 space-y-6">
         <AnimatePresence>
-          {currentSession.messages.map((message, index) => (
+          {currentSession.messages.map((message) => (
             <motion.div
               key={message.id}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.3, delay: index * 0.05 }}
+              transition={{ duration: 0.3 }}
             >
               <MessageBubble message={message} />
             </motion.div>
           ))}
         </AnimatePresence>
-
+        
         {isTyping && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="flex items-start space-x-3"
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.3 }}
           >
-            <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center flex-shrink-0">
-              <Bot className="w-4 h-4 text-gray-600" />
-            </div>
-            <div className="flex-1">
-              <TypingIndicator />
-            </div>
+            <TypingIndicator />
           </motion.div>
         )}
-
+        
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Input Area */}
-      <div className="border-t border-gray-200 pt-6">
-        <div className="flex items-end space-x-3">
-          <div className="flex-1 relative">
+      {/* Input */}
+      <div className="p-6 border-t border-gray-700">
+        <div className="flex items-end space-x-4">
+          <div className="flex-1">
             <textarea
               ref={inputRef}
               value={input}
               onChange={handleInputChange}
               onKeyPress={handleKeyPress}
-              placeholder="Ask Winded anything... (Press Enter to send, Shift+Enter for new line)"
-              className="warmwind-input w-full px-4 py-3 resize-none min-h-[50px] max-h-[120px]"
+              placeholder="Ask Winded anything..."
+              className="dark-input resize-none min-h-[60px] max-h-32"
               rows={1}
               disabled={state.isLoading}
             />
           </div>
-          
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+          <button
             onClick={handleSendMessage}
             disabled={!input.trim() || state.isLoading}
-            className="warmwind-button-primary p-3 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+            className="dark-button dark-button-primary disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {state.isLoading ? (
               <Loader2 className="w-5 h-5 animate-spin" />
             ) : (
               <Send className="w-5 h-5" />
             )}
-          </motion.button>
-        </div>
-        
-        <div className="flex items-center justify-between mt-3 text-xs text-gray-500">
-          <div className="flex items-center space-x-4">
-            <span>Temperature: {settingsState.settings.temperature}</span>
-            <span>Max Tokens: {settingsState.settings.maxTokens}</span>
-          </div>
-          <div className="flex items-center space-x-2">
-            <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-            <span>Fine-tunable</span>
-          </div>
+          </button>
         </div>
       </div>
+
+      {/* Modals */}
+      <SettingsModal isOpen={settingsOpen} onClose={() => setSettingsOpen(false)} />
+      <APIDocumentation isOpen={apiDocsOpen} onClose={() => setApiDocsOpen(false)} />
     </div>
   );
 };

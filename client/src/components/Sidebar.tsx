@@ -1,169 +1,136 @@
-import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  X, 
-  Plus, 
-  MessageSquare, 
-  Trash2, 
-  Settings, 
-  Bot, 
-  User,
-  Clock,
-  Zap
-} from 'lucide-react';
+import React from 'react';
+import { motion } from 'framer-motion';
+import { MessageSquare, Trash2, Plus, Bot, Settings } from 'lucide-react';
 import { useChat } from '../contexts/ChatContext';
 import { useSettings } from '../contexts/SettingsContext';
 import { formatDistanceToNow } from 'date-fns';
 
 interface SidebarProps {
-  onClose: () => void;
+  isOpen: boolean;
+  onToggle: () => void;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ onClose }) => {
-  const { state, currentSession, createSession, setCurrentSession, deleteSession } = useChat();
-  const { state: settingsState, toggleSettings } = useSettings();
-  const [newSessionTitle, setNewSessionTitle] = useState('');
+const Sidebar: React.FC<SidebarProps> = ({ isOpen, onToggle }) => {
+  const { state, currentSession, setCurrentSession, deleteSession, createSession } = useChat();
+  const { state: settingsState } = useSettings();
 
-  const handleCreateSession = () => {
-    if (newSessionTitle.trim()) {
-      createSession(newSessionTitle.trim(), settingsState.settings.model, settingsState.settings.systemMessage);
-      setNewSessionTitle('');
-    }
+  const handleNewSession = () => {
+    createSession('New Chat', settingsState.settings.model, settingsState.settings.systemMessage);
   };
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') {
-      handleCreateSession();
-    }
+  const handleDeleteSession = (sessionId: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    deleteSession(sessionId);
   };
 
   return (
-    <div className="h-full bg-white flex flex-col">
-      {/* Header */}
-      <div className="p-6 border-b border-gray-200">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-semibold text-gray-800">Chat Sessions</h2>
-          <button
-            onClick={onClose}
-            className="p-1 rounded-lg hover:bg-gray-100 transition-colors"
-          >
-            <X className="w-5 h-5 text-gray-600" />
-          </button>
-        </div>
+    <>
+      {/* Mobile overlay */}
+      {isOpen && (
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
+          onClick={onToggle}
+        />
+      )}
 
-        {/* New Session Input */}
-        <div className="space-y-3">
-          <div className="flex space-x-2">
-            <input
-              type="text"
-              value={newSessionTitle}
-              onChange={(e) => setNewSessionTitle(e.target.value)}
-              onKeyPress={handleKeyPress}
-              placeholder="New session title..."
-              className="warmwind-input flex-1 px-3 py-2"
-            />
+      {/* Sidebar */}
+      <motion.div
+        initial={false}
+        animate={{ 
+          x: isOpen ? 0 : -320,
+          opacity: isOpen ? 1 : 0
+        }}
+        transition={{ duration: 0.3, ease: "easeInOut" }}
+        className={`fixed left-0 top-0 h-full w-80 bg-gray-900 border-r border-gray-700 z-50 lg:relative lg:translate-x-0 lg:opacity-100`}
+      >
+        <div className="flex flex-col h-full">
+          {/* Header */}
+          <div className="p-6 border-b border-gray-700">
+            <div className="flex items-center space-x-3 mb-6">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center">
+                <Bot className="w-5 h-5 text-white" />
+              </div>
+              <div>
+                <h1 className="text-xl font-bold text-white">Winded</h1>
+                <p className="text-sm text-gray-400">Tunable AI</p>
+              </div>
+            </div>
+            
             <button
-              onClick={handleCreateSession}
-              disabled={!newSessionTitle.trim()}
-              className="warmwind-button-primary px-3 py-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              onClick={handleNewSession}
+              className="w-full dark-button dark-button-primary flex items-center justify-center space-x-2"
             >
               <Plus className="w-4 h-4" />
+              <span>New Chat</span>
             </button>
           </div>
-        </div>
-      </div>
 
-      {/* Sessions List */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-2">
-        <AnimatePresence>
-          {state.sessions.map((session) => (
-            <motion.div
-              key={session.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.2 }}
-              className={`p-3 rounded-lg cursor-pointer transition-all ${
-                currentSession?.id === session.id
-                  ? 'bg-gray-100 border border-gray-300'
-                  : 'hover:bg-gray-50 border border-transparent'
-              }`}
-              onClick={() => setCurrentSession(session.id)}
-            >
-              <div className="flex items-start justify-between">
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center space-x-2 mb-1">
-                    <MessageSquare className="w-4 h-4 text-gray-600 flex-shrink-0" />
-                    <h3 className="text-sm font-medium text-gray-800 truncate">
-                      {session.title}
-                    </h3>
-                  </div>
-                  
-                  <div className="flex items-center space-x-3 text-xs text-gray-500">
-                    <div className="flex items-center space-x-1">
-                      <Bot className="w-3 h-3" />
-                      <span>{session.model}</span>
-                    </div>
-                    <div className="flex items-center space-x-1">
-                      <Clock className="w-3 h-3" />
-                      <span>{formatDistanceToNow(session.updatedAt, { addSuffix: true })}</span>
-                    </div>
-                  </div>
-                  
-                  <div className="mt-1 text-xs text-gray-500">
-                    {session.messages.length} messages
-                  </div>
-                </div>
-                
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    deleteSession(session.id);
-                  }}
-                  className="p-1 rounded hover:bg-red-50 transition-colors"
-                >
-                  <Trash2 className="w-3 h-3 text-red-500" />
-                </button>
+          {/* Sessions List */}
+          <div className="flex-1 overflow-y-auto p-4 space-y-3">
+            {state.sessions.length === 0 ? (
+              <div className="text-center py-8">
+                <MessageSquare className="w-12 h-12 text-gray-600 mx-auto mb-4" />
+                <p className="text-gray-400 text-sm">No conversations yet</p>
+                <p className="text-gray-500 text-xs mt-1">Start a new chat to begin</p>
               </div>
-            </motion.div>
-          ))}
-        </AnimatePresence>
-
-        {state.sessions.length === 0 && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="text-center py-8"
-          >
-            <MessageSquare className="w-12 h-12 text-gray-400 mx-auto mb-3" />
-            <p className="text-gray-500 text-sm">No chat sessions yet</p>
-            <p className="text-gray-400 text-xs mt-1">Create your first session to get started</p>
-          </motion.div>
-        )}
-      </div>
-
-      {/* Footer */}
-      <div className="p-4 border-t border-gray-200">
-        <button
-          onClick={toggleSettings}
-          className="w-full flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-50 transition-colors"
-        >
-          <Settings className="w-5 h-5 text-gray-600" />
-          <span className="text-gray-800 font-medium">Settings</span>
-        </button>
-        
-        <div className="mt-3 p-3 rounded-lg bg-gray-50">
-          <div className="flex items-center space-x-2 mb-2">
-            <Zap className="w-4 h-4 text-gray-600" />
-            <span className="text-sm font-medium text-gray-800">AI Status</span>
+            ) : (
+              state.sessions.map((session) => (
+                <motion.div
+                  key={session.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className={`sidebar-card ${
+                    currentSession?.id === session.id ? 'active' : ''
+                  }`}
+                  onClick={() => setCurrentSession(session.id)}
+                >
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center space-x-2 mb-2">
+                        <MessageSquare className="w-4 h-4 text-gray-400 flex-shrink-0" />
+                        <h3 className="text-sm font-medium text-white truncate">
+                          {session.title}
+                        </h3>
+                      </div>
+                      
+                      <div className="flex items-center space-x-2 text-xs text-gray-400">
+                        <span>{session.messages.length} messages</span>
+                        <span>•</span>
+                        <span>{formatDistanceToNow(session.updatedAt, { addSuffix: true })}</span>
+                      </div>
+                      
+                      {session.model && (
+                        <div className="mt-2">
+                          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-gray-700 text-gray-300">
+                            {session.model}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                    
+                    <button
+                      onClick={(e) => handleDeleteSession(session.id, e)}
+                      className="p-1 rounded-lg hover:bg-gray-700 transition-colors ml-2"
+                      title="Delete session"
+                    >
+                      <Trash2 className="w-4 h-4 text-gray-400 hover:text-red-400" />
+                    </button>
+                  </div>
+                </motion.div>
+              ))
+            )}
           </div>
-          <div className="flex items-center space-x-2">
-            <div className="w-2 h-2 bg-green-500 rounded-full" />
-            <span className="text-xs text-gray-600">Tunable Mode Active</span>
+
+          {/* Footer */}
+          <div className="p-4 border-t border-gray-700">
+            <div className="flex items-center space-x-3 p-3 rounded-xl bg-gray-800 border border-gray-700">
+              <div className="w-2 h-2 rounded-full bg-green-500"></div>
+              <span className="text-sm text-gray-300">Tunable Mode Active</span>
+            </div>
           </div>
         </div>
-      </div>
-    </div>
+      </motion.div>
+    </>
   );
 };
 
