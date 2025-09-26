@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Send, Loader2, Bot, User, Copy, Check, Settings, Code, Plus } from 'lucide-react';
+import { Send, Loader2, Zap, User, Copy, Check, Settings, Code, Plus, Sparkles } from 'lucide-react';
 import { useChat } from '../contexts/ChatContext';
 import { useSettings } from '../contexts/SettingsContext';
 import { apiService } from '../services/api';
@@ -120,60 +120,92 @@ const ChatInterface: React.FC = () => {
 
   if (!currentSession) {
     return (
-      <div className="flex-1 flex items-center justify-center p-8">
-        <div className="text-center max-w-2xl">
-          <div className="mb-8">
-            <div className="w-24 h-24 mx-auto mb-6 rounded-2xl bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center">
-              <Bot className="w-12 h-12 text-white" />
-            </div>
-            <h1 className="text-4xl font-bold text-white mb-4">Welcome to Winded</h1>
-            <p className="text-xl text-gray-300 mb-8">
-              Your advanced tunable AI assistant with fine-tuning capabilities
-            </p>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-            <div className="feature-card">
-              <div className="w-12 h-12 rounded-xl bg-blue-600 flex items-center justify-center mb-4">
-                <Bot className="w-6 h-6 text-white" />
+      <div className="flex-1 flex items-center justify-center p-8 gaming-grid">
+        <div className="text-center max-w-4xl">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="mb-12"
+          >
+            <div className="relative mb-8">
+              <div className="w-32 h-32 mx-auto mb-6 rounded-3xl thunder-card-elevated flex items-center justify-center neon-glow">
+                <Zap className="w-16 h-16 text-indigo-400" />
               </div>
-              <h3 className="text-lg font-semibold text-white mb-2">Advanced AI</h3>
-              <p className="text-gray-400">Powered by GPT-5 with automatic provider routing for optimal performance</p>
+              <div className="absolute -top-2 -right-2 w-8 h-8 rounded-full bg-gradient-to-r from-pink-500 to-purple-500 flex items-center justify-center">
+                <Sparkles className="w-4 h-4 text-white" />
+              </div>
+            </div>
+            
+            <h1 className="text-6xl font-black thunder-logo mb-6">
+              THUNDER
+            </h1>
+            <p className="text-2xl text-gray-300 mb-4 font-medium">
+              Advanced AI Assistant
+            </p>
+            <p className="text-lg text-gray-400 max-w-2xl mx-auto">
+              Experience the power of next-generation AI with lightning-fast responses and unlimited possibilities
+            </p>
+          </motion.div>
+          
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12"
+          >
+            <div className="feature-card">
+              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-indigo-600 to-purple-600 flex items-center justify-center mb-6 gaming-glow">
+                <Zap className="w-8 h-8 text-white" />
+              </div>
+              <h3 className="text-xl font-bold text-white mb-3">Lightning Fast</h3>
+              <p className="text-gray-400">Powered by GPT-5 with optimized routing for instant responses</p>
             </div>
             
             <div className="feature-card">
-              <div className="w-12 h-12 rounded-xl bg-purple-600 flex items-center justify-center mb-4">
-                <Settings className="w-6 h-6 text-white" />
+              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-pink-600 to-rose-600 flex items-center justify-center mb-6 gaming-glow">
+                <Settings className="w-8 h-8 text-white" />
               </div>
-              <h3 className="text-lg font-semibold text-white mb-2">Fine-tuning</h3>
-              <p className="text-gray-400">Customize AI behavior for specific tasks and use cases</p>
+              <h3 className="text-xl font-bold text-white mb-3">Fully Tunable</h3>
+              <p className="text-gray-400">Customize AI behavior for any task with advanced fine-tuning</p>
             </div>
-          </div>
+            
+            <div className="feature-card">
+              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-cyan-600 to-blue-600 flex items-center justify-center mb-6 gaming-glow">
+                <Code className="w-8 h-8 text-white" />
+              </div>
+              <h3 className="text-xl font-bold text-white mb-3">Developer Ready</h3>
+              <p className="text-gray-400">Complete API access with no restrictions or rate limits</p>
+            </div>
+          </motion.div>
 
-          <button
+          <motion.button
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
             onClick={handleNewSession}
-            className="dark-button dark-button-primary text-lg px-8 py-4 rounded-2xl"
+            className="thunder-button thunder-button-primary text-xl px-12 py-6 rounded-2xl gaming-glow"
           >
-            <Plus className="w-5 h-5 mr-2" />
-            Start New Chat
-          </button>
+            <Zap className="w-6 h-6 mr-3" />
+            Start Thunder Chat
+          </motion.button>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="flex-1 flex flex-col h-full">
+    <div className="flex-1 flex flex-col h-full gaming-grid">
       {/* Header */}
-      <div className="flex items-center justify-between p-6 border-b border-gray-700">
+      <div className="flex items-center justify-between p-6 border-b border-gray-800">
         <div className="flex items-center space-x-4">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center">
-            <Bot className="w-5 h-5 text-white" />
+          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-indigo-600 to-purple-600 flex items-center justify-center gaming-glow">
+            <Zap className="w-6 h-6 text-white" />
           </div>
           <div>
-            <h2 className="text-xl font-semibold text-white">{currentSession.title}</h2>
+            <h2 className="text-2xl font-bold thunder-logo">{currentSession.title}</h2>
             <p className="text-sm text-gray-400">
-              {state.isStreaming ? 'AI is responding...' : 'AI Ready • Tunable Mode Active'}
+              {state.isStreaming ? 'Thunder is responding...' : 'Thunder Ready • Tunable Mode Active'}
             </p>
           </div>
         </div>
@@ -181,21 +213,21 @@ const ChatInterface: React.FC = () => {
         <div className="flex items-center space-x-3">
           <button
             onClick={() => setApiDocsOpen(true)}
-            className="dark-button dark-button-secondary"
+            className="thunder-button thunder-button-secondary"
             title="API Documentation"
           >
             <Code className="w-4 h-4" />
           </button>
           <button
             onClick={() => setSettingsOpen(true)}
-            className="dark-button dark-button-secondary"
+            className="thunder-button thunder-button-secondary"
             title="Settings"
           >
             <Settings className="w-4 h-4" />
           </button>
           <button
             onClick={handleNewSession}
-            className="dark-button dark-button-primary"
+            className="thunder-button thunder-button-primary"
             title="New Chat"
           >
             <Plus className="w-4 h-4" />
@@ -234,7 +266,7 @@ const ChatInterface: React.FC = () => {
       </div>
 
       {/* Input */}
-      <div className="p-6 border-t border-gray-700">
+      <div className="p-6 border-t border-gray-800">
         <div className="flex items-end space-x-4">
           <div className="flex-1">
             <textarea
@@ -242,8 +274,8 @@ const ChatInterface: React.FC = () => {
               value={input}
               onChange={handleInputChange}
               onKeyPress={handleKeyPress}
-              placeholder="Ask Winded anything..."
-              className="dark-input resize-none min-h-[60px] max-h-32"
+              placeholder="Ask Thunder anything..."
+              className="thunder-input resize-none min-h-[60px] max-h-32"
               rows={1}
               disabled={state.isLoading}
             />
@@ -251,7 +283,7 @@ const ChatInterface: React.FC = () => {
           <button
             onClick={handleSendMessage}
             disabled={!input.trim() || state.isLoading}
-            className="dark-button dark-button-primary disabled:opacity-50 disabled:cursor-not-allowed"
+            className="thunder-button thunder-button-primary disabled:opacity-50 disabled:cursor-not-allowed gaming-glow"
           >
             {state.isLoading ? (
               <Loader2 className="w-5 h-5 animate-spin" />

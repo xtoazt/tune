@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Settings, Bot, Zap, Sliders } from 'lucide-react';
+import { X, Settings, Zap, Bot, Sliders } from 'lucide-react';
 import { useSettings } from '../contexts/SettingsContext';
 
 interface SettingsModalProps {
@@ -36,17 +36,17 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
             {/* Header */}
             <div className="flex items-center justify-between mb-8">
               <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center">
-                  <Settings className="w-5 h-5 text-white" />
+                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-indigo-600 to-purple-600 flex items-center justify-center gaming-glow">
+                  <Settings className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <h2 className="text-2xl font-bold text-white">Settings</h2>
-                  <p className="text-gray-400">Customize your AI experience</p>
+                  <h2 className="text-3xl font-bold thunder-logo">Settings</h2>
+                  <p className="text-gray-400">Customize your Thunder experience</p>
                 </div>
               </div>
               <button
                 onClick={onClose}
-                className="p-2 rounded-lg hover:bg-gray-700 transition-colors"
+                className="p-2 rounded-lg hover:bg-gray-800 transition-colors"
               >
                 <X className="w-5 h-5 text-gray-400" />
               </button>
@@ -56,18 +56,18 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
               {/* Model Selection */}
               <div className="space-y-4">
                 <div className="flex items-center space-x-3">
-                  <Bot className="w-5 h-5 text-blue-400" />
-                  <h3 className="text-lg font-semibold text-white">AI Model</h3>
+                  <Bot className="w-5 h-5 text-indigo-400" />
+                  <h3 className="text-xl font-bold text-white">AI Model</h3>
                 </div>
                 
                 <div className="space-y-3">
                   <select
                     value={state.settings.model}
                     onChange={(e) => handleInputChange('model', e.target.value)}
-                    className="dark-input"
+                    className="thunder-input"
                   >
                     {state.models.map((model) => (
-                      <option key={model.id} value={model.id} className="bg-gray-800">
+                      <option key={model.id} value={model.id} className="bg-gray-900">
                         {model.name} ({model.provider})
                       </option>
                     ))}
@@ -83,8 +83,8 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
               {/* Advanced Settings */}
               <div className="space-y-4">
                 <div className="flex items-center space-x-3">
-                  <Sliders className="w-5 h-5 text-blue-400" />
-                  <h3 className="text-lg font-semibold text-white">Advanced Parameters</h3>
+                  <Sliders className="w-5 h-5 text-indigo-400" />
+                  <h3 className="text-xl font-bold text-white">Advanced Parameters</h3>
                 </div>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -100,7 +100,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
                       step="0.1"
                       value={state.settings.temperature}
                       onChange={(e) => handleInputChange('temperature', parseFloat(e.target.value))}
-                      className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer slider"
+                      className="w-full h-2 bg-gray-800 rounded-lg appearance-none cursor-pointer slider"
                     />
                     <p className="text-xs text-gray-500">Controls randomness (0 = deterministic, 2 = very random)</p>
                   </div>
@@ -117,7 +117,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
                       step="100"
                       value={state.settings.maxTokens}
                       onChange={(e) => handleInputChange('maxTokens', parseInt(e.target.value))}
-                      className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer slider"
+                      className="w-full h-2 bg-gray-800 rounded-lg appearance-none cursor-pointer slider"
                     />
                     <p className="text-xs text-gray-500">Maximum length of AI responses</p>
                   </div>
@@ -134,7 +134,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
                       step="0.1"
                       value={state.settings.topP}
                       onChange={(e) => handleInputChange('topP', parseFloat(e.target.value))}
-                      className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer slider"
+                      className="w-full h-2 bg-gray-800 rounded-lg appearance-none cursor-pointer slider"
                     />
                     <p className="text-xs text-gray-500">Controls diversity of word choices</p>
                   </div>
@@ -151,7 +151,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
                       step="0.1"
                       value={state.settings.frequencyPenalty}
                       onChange={(e) => handleInputChange('frequencyPenalty', parseFloat(e.target.value))}
-                      className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer slider"
+                      className="w-full h-2 bg-gray-800 rounded-lg appearance-none cursor-pointer slider"
                     />
                     <p className="text-xs text-gray-500">Reduces repetition of frequent words</p>
                   </div>
@@ -161,15 +161,15 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
               {/* System Message */}
               <div className="space-y-4">
                 <div className="flex items-center space-x-3">
-                  <Zap className="w-5 h-5 text-blue-400" />
-                  <h3 className="text-lg font-semibold text-white">System Message</h3>
+                  <Zap className="w-5 h-5 text-indigo-400" />
+                  <h3 className="text-xl font-bold text-white">System Message</h3>
                 </div>
                 
                 <div className="space-y-3">
                   <textarea
                     value={state.settings.systemMessage}
                     onChange={(e) => handleInputChange('systemMessage', e.target.value)}
-                    className="dark-input min-h-[120px] resize-none"
+                    className="thunder-input min-h-[120px] resize-none"
                     placeholder="Enter system message to customize AI behavior..."
                   />
                   <p className="text-sm text-gray-400">
@@ -182,13 +182,13 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <h3 className="text-lg font-semibold text-white">Streaming Responses</h3>
+                    <h3 className="text-xl font-bold text-white">Streaming Responses</h3>
                     <p className="text-sm text-gray-400">Enable real-time streaming of AI responses</p>
                   </div>
                   <button
                     onClick={() => handleInputChange('stream', !state.settings.stream)}
                     className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                      state.settings.stream ? 'bg-blue-600' : 'bg-gray-600'
+                      state.settings.stream ? 'bg-indigo-600' : 'bg-gray-600'
                     }`}
                   >
                     <span
@@ -202,10 +202,10 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
             </div>
 
             {/* Footer */}
-            <div className="flex justify-end space-x-4 mt-8 pt-6 border-t border-gray-700">
+            <div className="flex justify-end space-x-4 mt-8 pt-6 border-t border-gray-800">
               <button
                 onClick={onClose}
-                className="dark-button dark-button-secondary"
+                className="thunder-button thunder-button-secondary"
               >
                 Close
               </button>

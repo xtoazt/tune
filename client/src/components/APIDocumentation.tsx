@@ -79,7 +79,7 @@ payload = {
     "model": "gpt-5",
     "temperature": 0.7,
     "max_tokens": 2000,
-    "system_prompt": "You are Winded, a highly tunable AI assistant."
+                    "system_prompt": "You are Thunder, a highly tunable AI assistant."
 }
 
 response = requests.post(url, json=payload)
@@ -94,7 +94,7 @@ curl -X POST https://your-domain.vercel.app/api/v1/chat \\
     "model": "gpt-5",
     "temperature": 0.7,
     "max_tokens": 2000,
-    "system_prompt": "You are Winded, a highly tunable AI assistant."
+                    "system_prompt": "You are Thunder, a highly tunable AI assistant."
   }'`;
 
   return (
@@ -117,11 +117,11 @@ curl -X POST https://your-domain.vercel.app/api/v1/chat \\
             {/* Header */}
             <div className="flex items-center justify-between mb-8">
               <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center">
-                  <BookOpen className="w-5 h-5 text-white" />
+                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-indigo-600 to-purple-600 flex items-center justify-center gaming-glow">
+                  <BookOpen className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <h2 className="text-2xl font-bold text-white">Winded AI API</h2>
+                  <h2 className="text-3xl font-bold thunder-logo">THUNDER API</h2>
                   <p className="text-gray-400">Developer API Documentation</p>
                 </div>
               </div>
@@ -142,7 +142,7 @@ curl -X POST https://your-domain.vercel.app/api/v1/chat \\
                 </div>
                 <div className="bg-gray-800 border border-gray-700 rounded-xl p-6">
                   <p className="text-gray-300 mb-4">
-                    The Winded AI API provides access to advanced tunable AI capabilities with fine-tuning support. 
+                    The Thunder API provides access to advanced tunable AI capabilities with fine-tuning support. 
                     No API key required for basic usage.
                   </p>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">

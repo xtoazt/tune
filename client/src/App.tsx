@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Toaster } from 'react-hot-toast';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, Zap } from 'lucide-react';
 import { ChatProvider } from './contexts/ChatContext';
 import { SettingsProvider } from './contexts/SettingsContext';
 import ChatInterface from './components/ChatInterface';
@@ -16,17 +16,17 @@ function App() {
   return (
     <SettingsProvider>
       <ChatProvider>
-        <div className="h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 flex">
+        <div className="h-screen thunder-bg gaming-grid flex">
           {/* Sidebar */}
           <Sidebar isOpen={sidebarOpen} onToggle={toggleSidebar} />
           
           {/* Main Content */}
           <div className="flex-1 flex flex-col min-w-0">
             {/* Mobile Header */}
-            <div className="lg:hidden flex items-center justify-between p-4 border-b border-gray-700">
+            <div className="lg:hidden flex items-center justify-between p-4 border-b border-gray-800">
               <button
                 onClick={toggleSidebar}
-                className="p-2 rounded-lg hover:bg-gray-700 transition-colors"
+                className="p-2 rounded-lg hover:bg-gray-800 transition-colors"
               >
                 {sidebarOpen ? (
                   <X className="w-6 h-6 text-white" />
@@ -36,10 +36,10 @@ function App() {
               </button>
               
               <div className="flex items-center space-x-3">
-                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center">
-                  <span className="text-white font-bold text-sm">W</span>
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-600 to-purple-600 flex items-center justify-center gaming-glow">
+                  <Zap className="w-5 h-5 text-white" />
                 </div>
-                <span className="text-white font-semibold">Winded</span>
+                <span className="text-white font-bold text-lg thunder-logo">THUNDER</span>
               </div>
             </div>
 
@@ -55,9 +55,10 @@ function App() {
           toastOptions={{
             duration: 4000,
             style: {
-              background: '#1f2937',
+              background: '#1a1a1a',
               color: '#ffffff',
-              border: '1px solid #374151',
+              border: '1px solid #333333',
+              borderRadius: '12px',
             },
             success: {
               iconTheme: {

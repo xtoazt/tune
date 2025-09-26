@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Bot, User, Copy, Check, Clock } from 'lucide-react';
+import { Zap, User, Copy, Check, Clock } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
@@ -39,15 +39,15 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({ message }) => {
       className={`flex items-start space-x-4 ${isUser ? 'flex-row-reverse space-x-reverse' : ''}`}
     >
       {/* Avatar */}
-      <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${
+      <div className={`w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0 ${
         isUser 
-          ? 'bg-gradient-to-br from-blue-600 to-blue-700' 
-          : 'bg-gradient-to-br from-gray-700 to-gray-800 border border-gray-600'
+          ? 'bg-gradient-to-br from-indigo-600 to-purple-600 gaming-glow' 
+          : 'thunder-card border border-gray-700'
       }`}>
         {isUser ? (
-          <User className="w-5 h-5 text-white" />
+          <User className="w-6 h-6 text-white" />
         ) : (
-          <Bot className="w-5 h-5 text-white" />
+          <Zap className="w-6 h-6 text-indigo-400" />
         )}
       </div>
 
@@ -64,11 +64,11 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({ message }) => {
           {/* Message Header */}
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center space-x-3">
-              <span className="text-sm font-semibold text-white">
-                {isUser ? 'You' : 'Winded'}
+              <span className="text-sm font-bold text-white">
+                {isUser ? 'You' : 'Thunder'}
               </span>
               {message.model && (
-                <span className="text-xs text-gray-300 bg-gray-600 px-3 py-1 rounded-full">
+                <span className="text-xs text-gray-300 bg-gray-700 px-3 py-1 rounded-full border border-gray-600">
                   {message.model}
                 </span>
               )}
@@ -82,7 +82,7 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({ message }) => {
               
               <button
                 onClick={handleCopy}
-                className="p-2 rounded-lg hover:bg-gray-600 transition-colors"
+                className="p-2 rounded-lg hover:bg-gray-700 transition-colors"
                 title="Copy message"
               >
                 {copied ? (
@@ -111,7 +111,7 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({ message }) => {
                       {String(children).replace(/\n$/, '')}
                     </SyntaxHighlighter>
                   ) : (
-                    <code className="bg-gray-600 px-2 py-1 rounded text-sm text-gray-200" {...props}>
+                    <code className="bg-gray-700 px-2 py-1 rounded text-sm text-gray-200 border border-gray-600" {...props}>
                       {children}
                     </code>
                   );
@@ -139,7 +139,7 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({ message }) => {
                 },
                 blockquote({ children }) {
                   return (
-                    <blockquote className="border-l-4 border-blue-500 pl-4 italic text-gray-300 mb-3">
+                    <blockquote className="border-l-4 border-indigo-500 pl-4 italic text-gray-300 mb-3">
                       {children}
                     </blockquote>
                   );
@@ -150,14 +150,14 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({ message }) => {
                       href={href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-blue-400 hover:text-blue-300 underline"
+                      className="text-indigo-400 hover:text-indigo-300 underline"
                     >
                       {children}
                     </a>
                   );
                 },
                 strong({ children }) {
-                  return <strong className="font-semibold text-white">{children}</strong>;
+                  return <strong className="font-bold text-white">{children}</strong>;
                 },
                 em({ children }) {
                   return <em className="italic text-gray-300">{children}</em>;
@@ -173,7 +173,7 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({ message }) => {
                 },
                 th({ children }) {
                   return (
-                    <th className="border border-gray-600 px-4 py-2 bg-gray-700 text-white font-semibold text-left">
+                    <th className="border border-gray-600 px-4 py-2 bg-gray-800 text-white font-semibold text-left">
                       {children}
                     </th>
                   );

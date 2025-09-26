@@ -1,8 +1,8 @@
-# Winded - Tunable AI
+# Winded - Tunable AI 
 
 Winded is a highly tunable AI assistant with a beautiful, modern interface inspired by warmwind.space. This application provides advanced fine-tuning capabilities, allowing you to create custom AI models tailored to your specific needs. With support for both OpenAI and LLM7 APIs, Winded enables you to fine-tune models for specialized tasks, custom behaviors, and domain-specific applications.
 
-## Features
+## Feature
 
 ### 🤖 **Advanced Tunable AI**
 - **Fine-tuning capabilities** - Create custom models for specific tasks
