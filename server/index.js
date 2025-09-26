@@ -14,11 +14,11 @@ const PORT = process.env.PORT || 3001;
 
 // Initialize OpenAI
 const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY || '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',
+  apiKey: process.env.OPENAI_API_KEY,
 });
 
 // LLM7 Configuration
-const LLM7_API_KEY = process.env.LLM7_API_KEY || 'jWu2HHhYpFNvFXRKxySq+nPM6MFRh5scJ8N5Mcnr19jdBd5flynfKRFgyTargFWn36Q6e+jzczISigrDIL2OrmjiDUa3R+BNpxDvM/3h5rkobD5BWqIaZQEx';
+const LLM7_API_KEY = process.env.LLM7_API_KEY;
 const LLM7_BASE_URL = 'https://api.llm7.com/v1';
 
 // Available models configuration - Only GPT-5
